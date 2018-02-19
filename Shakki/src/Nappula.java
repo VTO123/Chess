@@ -18,7 +18,7 @@ public abstract class Nappula implements Comparable<Nappula>{
 	
 	
 	
-	public abstract boolean voikoLiikkuaRuutuun();
+	public abstract boolean voikoLiikkuaRuutuun(int[] ruutu);
 	
 	public int[] annaSijainti(){
 		return sijainti;
