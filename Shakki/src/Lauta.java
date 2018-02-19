@@ -58,12 +58,12 @@ public class Lauta implements Serializable {
 			nappulat.add(new Sotilas(Vari.VALKOINEN, new int[] {i, 2}));
 		}
 		nappulat.add(new Torni(Vari.VALKOINEN, new int[] {1, 1}));
-		nappulat.add(new Ratsu(Vari.VALKOINEN, new int[] {1, 2}));
-		nappulat.add(new Lahetti(Vari.VALKOINEN, new int[] {1, 3}));
-		nappulat.add(new Kuningatar(Vari.VALKOINEN, new int[] {1, 4}));
-		nappulat.add(new Kuningas(Vari.VALKOINEN, new int[] {1, 5}));
-		nappulat.add(new Lahetti(Vari.VALKOINEN, new int[] {1, 6}));
-		nappulat.add(new Ratsu(Vari.VALKOINEN, new int[] {1, 7}));
-		nappulat.add(new Torni(Vari.VALKOINEN, new int[] {1, 8}));
+		nappulat.add(new Ratsu(Vari.VALKOINEN, new int[] {2, 1}));
+		nappulat.add(new Lahetti(Vari.VALKOINEN, new int[] {3, 1}));
+		nappulat.add(new Kuningatar(Vari.VALKOINEN, new int[] {4, 1}));
+		nappulat.add(new Kuningas(Vari.VALKOINEN, new int[] {5, 1}));
+		nappulat.add(new Lahetti(Vari.VALKOINEN, new int[] {6, 1}));
+		nappulat.add(new Ratsu(Vari.VALKOINEN, new int[] {7, 1}));
+		nappulat.add(new Torni(Vari.VALKOINEN, new int[] {8, 1}));
 	}
 }
