@@ -7,6 +7,10 @@ public abstract class Nappula {
 	
 	public Nappula(Vari vari, int[] sijainti){
 		this.vari = vari;
+		if(sijainti[0] < 0 || sijainti[1] > 7
+				|| sijainti[1] < 0 || sijainti[1] > 7){
+			throw new IllegalArgumentException("Nappula ulkona laudalta!");
+		}
 		this.sijainti = sijainti;
 		
 	}
@@ -20,6 +24,10 @@ public abstract class Nappula {
 	}
 	
 	public void asetaSijainti(int[] sijainti){
+		if(sijainti[0] < 0 || sijainti[1] > 7
+				|| sijainti[1] < 0 || sijainti[1] > 7){
+			throw new IllegalArgumentException("Nappula ulkona laudalta!");
+		}
 		this.sijainti = sijainti;
 	}
 	
