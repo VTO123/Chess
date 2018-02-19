@@ -15,7 +15,10 @@ public class Torni extends Nappula{
 	@Override
 	public boolean voikoLiikkuaRuutuun(int[] ruutu){
 		//Torni voi liikkua vain suoraan riviä tai saraketta pitkin.
+		
+		
 		if(ruutu[0] == sijainti[0] && ruutu[1] != sijainti[1]){
+			//Katsotaan vielä onko kohderuutu laudalla
 			if(ruutu[1] >= 1 && ruutu[1] <= 8){
 				return true;
 			}
