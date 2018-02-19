@@ -8,8 +8,8 @@ public abstract class Nappula implements Comparable<Nappula>{
 	
 	public Nappula(Vari vari, int[] sijainti){
 		this.vari = vari;
-		if(sijainti[0] < 0 || sijainti[1] > 7
-				|| sijainti[1] < 0 || sijainti[1] > 7){
+		if(sijainti[0] < 1 || sijainti[1] > 8
+				|| sijainti[1] < 1 || sijainti[1] > 8){
 			throw new IllegalArgumentException("Nappula ulkona laudalta!");
 		}
 		this.sijainti = sijainti;
@@ -25,8 +25,8 @@ public abstract class Nappula implements Comparable<Nappula>{
 	}
 	
 	public void asetaSijainti(int[] sijainti){
-		if(sijainti[0] < 0 || sijainti[1] > 7
-				|| sijainti[1] < 0 || sijainti[1] > 7){
+		if(sijainti[0] < 1 || sijainti[1] > 8
+				|| sijainti[1] < 1 || sijainti[1] > 8){
 			throw new IllegalArgumentException("Nappula ulkona laudalta!");
 		}
 		this.sijainti = sijainti;
