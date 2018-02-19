@@ -4,7 +4,7 @@ public abstract class Nappula implements Comparable<Nappula>{
 	public final Vari vari;
 	
 	//Sijainti: ensimmäinen arvo vastaa pystyrivin kirjainta a-h ja toinen vaakarivin numeroa
-	private int[] sijainti = new int[2];
+	protected int[] sijainti = new int[2];
 	
 	public Nappula(Vari vari, int[] sijainti){
 		this.vari = vari;
