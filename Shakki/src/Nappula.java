@@ -54,7 +54,7 @@ public abstract class Nappula implements Comparable<Nappula>{
 		}
 		
 		//Jos ollaan samalla rivillä katsotaan sarake
-		if(this.sijainti[0] < toinen.annaSijainti()[1]){
+		if(this.sijainti[0] < toinen.annaSijainti()[0]){
 			return -1;
 		}
 		return 1;
