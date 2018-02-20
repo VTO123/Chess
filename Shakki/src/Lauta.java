@@ -22,6 +22,7 @@ public class Lauta implements Serializable {
 	public void pelaaVuoro() {
 		boolean siirtoOnnistui = false;
 		
+		//Kysyt‰‰n syˆte ja yritet‰‰n toimia sen mukaan kunnes onnistutaan
 		while(! siirtoOnnistui) {
 			int[][] siirto = kysySiirto();
 			int[] lahto = siirto[0];
@@ -32,11 +33,13 @@ public class Lauta implements Serializable {
 			}
 		}
 		
+		//Piirret‰‰n lauta ja tarkistataan mahdollinen shakkimatti
 		piirraLauta();
 		if(onkoShakkiMatti()) {
 			System.out.println("Shakki ja Matti");
 		}
 		
+		//Vaihdetaan vuorossa olevaa v‰ri‰
 		vuoro = vuoro == Vari.VALKOINEN ? Vari.MUSTA : Vari.VALKOINEN;
 		
 	}
@@ -233,6 +236,8 @@ public class Lauta implements Serializable {
 	//palauttaa true jos shakkimatti
 	private boolean onkoShakkiMatti() {
 		Nappula kuningas = null;
+		
+		//Etsit‰‰n kuningas joka saattaa olla uhattuna
 		for(Nappula n : nappulat) {
 			if(n instanceof Kuningas && n.vari != vuoro) {
 				kuningas = n;
@@ -244,10 +249,12 @@ public class Lauta implements Serializable {
 		int[] alkupSijainti = kuningas.annaSijainti();
 		int[] mahdSijainti = Arrays.copyOf(alkupSijainti, 2);
 		
+		//Tarkistetaan onko kunigas uhattuna jos sit‰ ei siirret‰
 		if(!uhattuRuutu(uhka, alkupSijainti)) {
 			return false;
 		}
 		
+		//Tarkistetaan onko kunigas uhattuna vaikka sit‰ siirrett‰isiin
 		for(int r = -1; r < 2; r++) {
 			for(int s = -1; r < 2; s++) {
 				mahdSijainti[0] += r;
@@ -259,6 +266,8 @@ public class Lauta implements Serializable {
 				}
 			}
 		}
+		
+		//TODO voidaanko shakkimatti est‰‰ seuraavalla siirrolla
 		
 		return true;
 	}
@@ -314,11 +323,16 @@ public class Lauta implements Serializable {
 	}
 
 	public void piirraLauta() {
+		
+		//J‰rjestet‰‰n nappulat tulostusta varten
 		Collections.sort(nappulat);
+		
 		int index = 0;
 		System.out.println("  -----------------------------------------");
+		
+		//K‰yd‰‰n l‰pi ruudut rivi kerallaan ylh‰‰lt‰ alas ja tulostetaan nappulat paikoilleen
 		for(int r = 8; r > 0; r--) {	
-			String rivi = r + " |";
+			String rivi = r + " |"; //Rivin numerot vasempaan reunaan
 			for(int s = 1; s < 9; s++) {
 				int[] sij = nappulat.get(index).annaSijainti();
 				if(sij[0] == s && sij[1] == r) {
@@ -334,17 +348,21 @@ public class Lauta implements Serializable {
 			System.out.println(rivi);
 			System.out.println("  -----------------------------------------");
 		}
+		//Saakkeita vastaavat kirjaimet alareunaan
 		System.out.println("    a    b    c    d    e    f    g    h");
 	}
 	
+	//TODO
 	public void tallennaLauta() {
 		
 	}
 	
+	//TODO
 	public void lataaLauta() {
 		
 	}
 	
+	//Luo pelinappulat ja asettaa niiden sijainnit shakin alkutilanteen mukaisiksi
 	private void alustaNappulat() {
 		nappulat.add(new Torni(Vari.MUSTA, new int[] {1, 8}));
 		nappulat.add(new Ratsu(Vari.MUSTA, new int[] {2, 8}));
@@ -370,6 +388,7 @@ public class Lauta implements Serializable {
 		nappulat.add(new Torni(Vari.VALKOINEN, new int[] {8, 1}));
 	}
 
+	//Alustaa HashMap olion jota k‰ytet‰‰n kirjainkoordinaattian muuntamiseen luvuiksi
 	private void alustaKoordMuunnos() {
 		koordMuunnos = new HashMap<>();
 		koordMuunnos.put('A', 1);
