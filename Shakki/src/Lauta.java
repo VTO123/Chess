@@ -34,9 +34,9 @@ public class Lauta implements Serializable {
 	public void piirraLauta() {
 		Collections.sort(nappulat);
 		int index = 0;
-		System.out.println("-----------------------------------------");
+		System.out.println("  -----------------------------------------");
 		for(int r = 8; r > 0; r--) {	
-			String rivi = "|";
+			String rivi = r + " |";
 			for(int s = 1; s < 9; s++) {
 				int[] sij = nappulat.get(index).annaSijainti();
 				if(sij[0] == s && sij[1] == r) {
@@ -50,8 +50,9 @@ public class Lauta implements Serializable {
 				}
 			}
 			System.out.println(rivi);
-			System.out.println("-----------------------------------------");
+			System.out.println("  -----------------------------------------");
 		}
+		System.out.println("    a    b    c    d    e    f    g    h");
 	}
 	
 	public void tallennaLauta() {
