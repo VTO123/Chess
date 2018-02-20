@@ -37,4 +37,15 @@ public class Sotilas extends Nappula{
 		
 		
 	}
+	
+	@Override
+	public String toString(){
+		String palautus = "S";
+		
+		palautus = (vari == Vari.VALKOINEN) ? "v" : "m" + palautus;
+		
+		return palautus;
+		
+	}
+	
 }

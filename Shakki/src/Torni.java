@@ -34,4 +34,14 @@ public class Torni extends Nappula{
 		
 	}
 	
+	@Override
+	public String toString(){
+		String palautus = "T";
+		
+		palautus = (vari == Vari.VALKOINEN) ? "v" : "m" + palautus;
+		
+		return palautus;
+		
+	}
+	
 }

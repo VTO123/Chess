@@ -42,4 +42,14 @@ public class Kuningas extends Nappula{
 		
 	}
 	
+	@Override
+	public String toString(){
+		String palautus = "K";
+		
+		palautus = (vari == Vari.VALKOINEN) ? "v" : "m" + palautus;
+		
+		return palautus;
+		
+	}
+	
 }

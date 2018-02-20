@@ -33,4 +33,14 @@ public class Ratsu extends Nappula{
 		
 	}
 	
+	@Override
+	public String toString(){
+		String palautus = "R";
+		
+		palautus = (vari == Vari.VALKOINEN) ? "v" : "m" + palautus;
+		
+		return palautus;
+		
+	}
+	
 }

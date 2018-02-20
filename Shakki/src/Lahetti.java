@@ -35,4 +35,14 @@ public class Lahetti extends Nappula{
 		
 	}
 	
+	@Override
+	public String toString(){
+		String palautus = "L";
+		
+		palautus = (vari == Vari.VALKOINEN) ? "v" : "m" + palautus;
+		
+		return palautus;
+		
+	}
+	
 }

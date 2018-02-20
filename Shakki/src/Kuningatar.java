@@ -36,4 +36,14 @@ public class Kuningatar extends Nappula{
 		
 	}
 	
+	@Override
+	public String toString(){
+		String palautus = "D";
+		
+		palautus = (vari == Vari.VALKOINEN) ? "v" : "m" + palautus;
+		
+		return palautus;
+		
+	}
+	
 }
