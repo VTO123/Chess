@@ -1,5 +1,6 @@
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class Lauta implements Serializable {
@@ -13,6 +14,10 @@ public class Lauta implements Serializable {
 		alustaNappulat();
 	}
 	
+	public void pelaaVuoro() {
+		
+	}
+	
 	private void poistaNappula(int[] koord) {
 		for(Nappula n : nappulat) {
 			if(n.annaSijainti()[0] == koord[0] && n.annaSijainti()[1] == koord[1]) {
@@ -22,16 +27,31 @@ public class Lauta implements Serializable {
 		}
 	}
 	
-	public void pelaaVuoro() {
-		
-	}
-	
 	private void liikutaNappulaa(int[] lahto, int[] kohde) {
 		
 	}
 	
 	private void piirraLauta() {
-		
+		Collections.sort(nappulat);
+		int index = 0;
+		System.out.println("-----------------------");
+		for(int r = 8; r > 0; r--) {	
+			String rivi = "|";
+			for(int s = 1; s < 9; s++) {
+				int[] sij = nappulat.get(index).annaSijainti();
+				if(sij[0] == s && sij[1] == r) {
+					rivi += nappulat.get(index).toString();
+					rivi += "|";
+					if(index < nappulat.size()) {
+						index++;
+					}
+				}else {
+					rivi += "  |";
+				}
+			}
+			System.out.println(rivi);
+			System.out.println("-----------------------");
+		}
 	}
 	
 	public void tallennaLauta() {
