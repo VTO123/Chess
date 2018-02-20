@@ -31,26 +31,26 @@ public class Lauta implements Serializable {
 		
 	}
 	
-	private void piirraLauta() {
+	public void piirraLauta() {
 		Collections.sort(nappulat);
 		int index = 0;
-		System.out.println("-----------------------");
+		System.out.println("-----------------------------------------");
 		for(int r = 8; r > 0; r--) {	
 			String rivi = "|";
 			for(int s = 1; s < 9; s++) {
 				int[] sij = nappulat.get(index).annaSijainti();
 				if(sij[0] == s && sij[1] == r) {
-					rivi += nappulat.get(index).toString();
-					rivi += "|";
+					rivi += " " +nappulat.get(index).toString();
+					rivi += " |";
 					if(index < nappulat.size()) {
 						index++;
 					}
 				}else {
-					rivi += "  |";
+					rivi += "    |";
 				}
 			}
 			System.out.println(rivi);
-			System.out.println("-----------------------");
+			System.out.println("-----------------------------------------");
 		}
 	}
 	
