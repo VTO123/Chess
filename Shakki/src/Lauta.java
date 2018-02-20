@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 public class Lauta implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private ArrayList<Nappula> nappulat;
 	private Vari vuoro;
 	private HashMap<Character, Integer> koordMuunnos;
