@@ -50,10 +50,186 @@ public class Lauta implements Serializable {
 		}
 	}
 	
-	private void liikutaNappulaa(int[] lahto, int[] kohde) {
+	
+	
+	
+	/*
+	 * Palauttaa true ja siirtää lahto- koordinaatissa olevan nappulan kohde- koordinaattiin,
+	 * jos annettu siirto on laillinen. Muulloin palauttaa false.
+	 * Tämä metodi hoitaa nappuloiden syömisen tarvittaessa.
+	 */
+	
+	private boolean liikutaNappulaa(int[] lahto, int[] kohde) {
+		//Tarkistetaan onko annetussa lähtöruudussa nappula
+		Nappula siirrettava = null;
+		for(Nappula n : nappulat){
+			if(n.annaSijainti()[0] == lahto[0] && n.annaSijainti()[1] == lahto[1]){
+				siirrettava = n;
+				//Loppuja nappuloita ei tarvitse tarkistaa
+				break;
+			}
+		}
+		
+		//Tyhjästä ruudusta tai vastustajan nappulaa ei voi siirtää
+		if(siirrettava == null || siirrettava.vari != vuoro){
+			return false;
+		}
+		
+		if(siirrettava.voikoLiikkuaRuutuun(kohde)){
+			//Tämä suoritetaan, jos siirto on sallittu nappulan omien liikkumissääntöjen puitteissa
+			//(poikkeus: sotilaan erikoissiirrot syöminen, ensimmäinen liikkuminen, ohilyönti)
+			
+			//Jos lähtö- ja kohderuudun välissä on nappuloita, ei voi siirtää (paitsi ratsua)
+			if(!tarkistaSiirtolinja(lahto, kohde) && ! (siirrettava instanceof Ratsu)){
+				return false;
+			}
+			
+			//Tarkistetaan onko kohderuudussa nappulaa;
+			//oma estää siirtymisen ja vastustaja syödään
+			Nappula kohdeNappula = null;
+			for(Nappula n : nappulat){
+				if(n.annaSijainti()[0] == kohde[0] && n.annaSijainti()[1] == kohde[1]){
+					kohdeNappula = n;
+					//Loppuja nappuloita ei tarvitse tarkistaa
+					break;
+				}
+			}
+			
+			//Jos kohderuudussa ei nappulaa, siirretään.
+			if(kohdeNappula == null){
+				siirrettava.asetaSijainti(kohde);
+				return true;
+			}
+			
+			//Vastustaja syödään ja siirretään siirrettävää nappulaa
+			else if(kohdeNappula.vari != vuoro){
+				poistaNappula(kohde);
+				siirrettava.asetaSijainti(kohde);
+				return true;
+			}
+			//Oman nappulan päälle ei voi siirtää
+			else{
+				return false;
+			}
+			
+		}
+		else if(siirrettava instanceof Sotilas){
+			//Sotilaalla on omat erikoissiirtonsa.
+			
+			//Sotilas voi siirtyä kaksi ruutua eteenpäin aloitusriviltään
+			//Valkoiset sotilaat aloittavat riviltä 2 ja mustat riviltä 7.
+			int aloitusRivi = (siirrettava.vari == Vari.VALKOINEN) ? 2 : 7;
+			
+			//Jos sotilasta ei ole vielä siirretty sitä voi siirtää kaksi ruutua
+			if(siirrettava.annaSijainti()[1] == aloitusRivi && lahto[0] == kohde[0] && tarkistaSiirtolinja(lahto, kohde)){
+				
+				//kohderuudussa ei saa olla nappulaa
+				for(Nappula n : nappulat){
+					if(n.annaSijainti()[0] == kohde[0] && n.annaSijainti()[1] == kohde[1]){
+						return false;
+					}
+				}
+			}
+			
+			
+			//Kyseessä voi myös olla syönti, jonka sotilas suorittaa vinoon
+			
+			//Valkoinen sotilas liikkuu ylöspäin laudalla
+			if(vuoro == Vari.VALKOINEN){
+				if((kohde[0] == lahto[0] + 1 || kohde[0] == lahto[0] - 1) && kohde[1] == lahto[1] + 1){
+					//Onnistuu vain jos kohderuudussa on vastustajan nappula
+					for(Nappula n : nappulat){
+						if(n.annaSijainti()[0] == kohde[0] && n.annaSijainti()[1] == kohde[1]){
+							if(n.vari != vuoro){
+								poistaNappula(kohde);
+								siirrettava.asetaSijainti(kohde);
+								return true;
+							}
+							return false;	//Omaa nappulaa ei voi lyödä
+						}
+					}
+					
+				}
+			}
+			//Musta sotilas liikkuu alaspäin laudalla
+			else if(vuoro == Vari.MUSTA){
+				if((kohde[0] == lahto[0] + 1 || kohde[0] == lahto[0] - 1) && kohde[1] == lahto[1] - 1){
+					//Onnistuu vain jos kohderuudussa on vastustajan nappula
+					for(Nappula n : nappulat){
+						if(n.annaSijainti()[0] == kohde[0] && n.annaSijainti()[1] == kohde[1]){
+							if(n.vari != vuoro){
+								poistaNappula(kohde);
+								siirrettava.asetaSijainti(kohde);
+								return true;
+							}
+							return false;	//Omaa nappulaa ei voi lyödä
+						}
+					}
+					
+				}
+			}
+			
+			//TODO en passant?
+			
+			return false;
+			
+		}
+		else{
+			//Laiton siirto
+			return false;
+		}
+	}
+	
+	
+	/*
+	 * Palauttaa true, jos lähtö- ja kohderuudun välissä ei ole nappuloita.
+	 */
+	private boolean tarkistaSiirtolinja(int[] lahto, int[] kohde){
+		
+		//Siirtymäalkio kertoo siirroksen suunnan.
+		int[] siirtymaAlkio = new int[2];
+		
+		if(kohde[0] == lahto[0]){
+			//Siirrytään vaakariviltä toiselle
+			siirtymaAlkio[1] = (kohde[1] - lahto[1] > 0) ? 1 : -1;
+		}
+		else if(kohde[1] == lahto[1]){
+			//Siirrytään pystysarakkeelta toiselle
+			siirtymaAlkio[0] = (kohde[0] - lahto[0] > 0) ? 1 : -1;
+
+		}else{
+			//Siirrytään vinottain
+			siirtymaAlkio[0] = (kohde[0] - lahto[0] > 0) ? 1 : -1;
+			siirtymaAlkio[1] = (kohde[1] - lahto[1] > 0) ? 1 : -1;
+		}
+		
+		
+		int[] tarkistettavaRuutu = new int[2];
+		tarkistettavaRuutu[0] = lahto[0] + siirtymaAlkio[0];
+		tarkistettavaRuutu[1] = lahto[1] + siirtymaAlkio[1];
+
+		while(!(tarkistettavaRuutu[0] == kohde[0] && tarkistettavaRuutu[1] == kohde[1])){
+			//toistetaan kunnes ollaan kohderuudussa
+			
+			//Tarkistetaan tarkistettava ruutu nappuloiden varalta.
+			for(Nappula n : nappulat){
+				
+				//Palautetaan false jos jokin nappula on tarkistettavassa ruudussa
+				if(n.annaSijainti()[0] == tarkistettavaRuutu[0] && n.annaSijainti()[1] == tarkistettavaRuutu[1]){
+					return false;
+				}
+			}
+			
+			//Päivitetään tarkistettava ruutu
+			tarkistettavaRuutu[0] = lahto[0] + siirtymaAlkio[0];
+			tarkistettavaRuutu[1] = lahto[1] + siirtymaAlkio[1];
+		}
+		//Jos missään siirtymälinjalle osuvassa ruudussa ei ollut nappulaa, palautetaan true.
+		return true;
 		
 	}
 	
+
 	//palauttaa true jos shakkimatti
 	private boolean onkoShakkiMatti() {
 		Nappula kuningas = null;
@@ -76,7 +252,7 @@ public class Lauta implements Serializable {
 			for(int s = -1; r < 2; s++) {
 				mahdSijainti[0] += r;
 				mahdSijainti[1] += s;
-				if(kuningas.voikoLiikkuaRuutuun(sijainti) && tarkistaSiirtolinja(alkupSijainti, mahdSijainti)) {
+				if(kuningas.voikoLiikkuaRuutuun(mahdSijainti) && tarkistaSiirtolinja(alkupSijainti, mahdSijainti)) {
 					if(!uhattuRuutu(uhka, mahdSijainti)) {
 						return false;
 					}
@@ -102,6 +278,7 @@ public class Lauta implements Serializable {
 		}
 		return false;
 	}
+
 	
 	//@return : return[0] == lähtökoordinaatti + return[1] == kohdekoordinaatti
 	private int[][] kysySiirto() {
