@@ -38,7 +38,7 @@ public class Torni extends Nappula{
 	public String toString(){
 		String palautus = "T";
 		
-		palautus = (vari == Vari.VALKOINEN) ? "v" : "m" + palautus;
+		palautus = ((vari == Vari.VALKOINEN) ? "v" : "m") + palautus;
 		
 		return palautus;
 		

@@ -39,7 +39,7 @@ public class Lahetti extends Nappula{
 	public String toString(){
 		String palautus = "L";
 		
-		palautus = (vari == Vari.VALKOINEN) ? "v" : "m" + palautus;
+		palautus = ((vari == Vari.VALKOINEN) ? "v" : "m") + palautus;
 		
 		return palautus;
 		

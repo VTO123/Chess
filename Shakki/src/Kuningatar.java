@@ -40,7 +40,7 @@ public class Kuningatar extends Nappula{
 	public String toString(){
 		String palautus = "D";
 		
-		palautus = (vari == Vari.VALKOINEN) ? "v" : "m" + palautus;
+		palautus = ((vari == Vari.VALKOINEN) ? "v" : "m") + palautus;
 		
 		return palautus;
 		
