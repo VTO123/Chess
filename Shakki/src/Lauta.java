@@ -1,17 +1,21 @@
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Scanner;
+import java.util.Map;
 
 public class Lauta implements Serializable {
 
 	private ArrayList<Nappula> nappulat;
 	private Vari vuoro;
+	private HashMap<Character, Integer> koordMuunnos;
 	
 	public Lauta() {
 		nappulat = new ArrayList<>();
 		vuoro = Vari.VALKOINEN;
 		alustaNappulat();
+		alustaKoordMuunnos();
 	}
 	
 	public void pelaaVuoro() {
@@ -31,6 +35,39 @@ public class Lauta implements Serializable {
 		
 	}
 	
+	//@return : return[0] == lähtökoordinaatti + return[1] == kohdekoordinaatti
+	private int[][] kysySiirto() {
+		Scanner scanner = new Scanner(System.in);
+		String vari = vuoro == Vari.VALKOINEN ? "Valkoinen" : "Musta"; 
+		System.out.println(vari + " anna siirto:");
+		
+		//A1 A2 lähtöruutu *väli* kohderuutu
+		//@TODO : savegame tallentaa pelin
+		String syote = scanner.nextLine();
+		scanner.close();
+		
+		syote = syote.toUpperCase();
+		int[][] siirto = new int[2][2];
+		
+		String tarkastus = "ABCDEFGH";
+		if(!(tarkastus.contains(syote.charAt(0) + "") && tarkastus.contains(syote.charAt(3) + ""))){
+			System.out.println("Virheellinen syöte");
+			return kysySiirto();
+		}
+		
+		try {
+		siirto[0][0] = koordMuunnos.get(syote.charAt(0));
+		siirto[0][1] = Integer.parseInt(syote.charAt(1) + "");
+		siirto[1][0] = koordMuunnos.get(syote.charAt(3));
+		siirto[1][1] = Integer.parseInt(syote.charAt(4) + "");
+		}catch(NumberFormatException e){
+			System.out.println("Virheellinen syöte");
+			return kysySiirto();
+		}
+		
+		return siirto;
+	}
+
 	public void piirraLauta() {
 		Collections.sort(nappulat);
 		int index = 0;
@@ -87,4 +124,17 @@ public class Lauta implements Serializable {
 		nappulat.add(new Ratsu(Vari.VALKOINEN, new int[] {7, 1}));
 		nappulat.add(new Torni(Vari.VALKOINEN, new int[] {8, 1}));
 	}
+
+	private void alustaKoordMuunnos() {
+		koordMuunnos = new HashMap<>();
+		koordMuunnos.put('A', 1);
+		koordMuunnos.put('B', 2);
+		koordMuunnos.put('C', 3);
+		koordMuunnos.put('D', 4);
+		koordMuunnos.put('E', 5);
+		koordMuunnos.put('F', 6);
+		koordMuunnos.put('G', 7);
+		koordMuunnos.put('H', 8);
+	}
 }
+
