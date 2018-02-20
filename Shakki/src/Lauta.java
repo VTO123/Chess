@@ -1,5 +1,6 @@
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -19,6 +20,24 @@ public class Lauta implements Serializable {
 	}
 	
 	public void pelaaVuoro() {
+		boolean siirtoOnnistui = false;
+		
+		while(! siirtoOnnistui) {
+			int[][] siirto = kysySiirto();
+			int[] lahto = siirto[0];
+			int[] kohde = siirto[1];
+			
+			if(liikutaNappulaa(lahto, kohde)) {
+				siirtoOnnistui = true;
+			}
+		}
+		
+		piirraLauta();
+		if(onkoShakkiMatti()) {
+			System.out.println("Shakki ja Matti");
+		}
+		
+		vuoro = vuoro == Vari.VALKOINEN ? Vari.MUSTA : Vari.VALKOINEN;
 		
 	}
 	
@@ -35,6 +54,55 @@ public class Lauta implements Serializable {
 		
 	}
 	
+	//palauttaa true jos shakkimatti
+	private boolean onkoShakkiMatti() {
+		Nappula kuningas = null;
+		for(Nappula n : nappulat) {
+			if(n instanceof Kuningas && n.vari != vuoro) {
+				kuningas = n;
+				break;
+			}
+		}
+		
+		Vari uhka = kuningas.vari == Vari.VALKOINEN ? Vari.MUSTA : Vari.VALKOINEN;
+		int[] alkupSijainti = kuningas.annaSijainti();
+		int[] mahdSijainti = Arrays.copyOf(alkupSijainti, 2);
+		
+		if(!uhattuRuutu(uhka, alkupSijainti)) {
+			return false;
+		}
+		
+		for(int r = -1; r < 2; r++) {
+			for(int s = -1; r < 2; s++) {
+				mahdSijainti[0] += r;
+				mahdSijainti[1] += s;
+				if(kuningas.voikoLiikkuaRuutuun(sijainti) && tarkistaSiirtolinja(alkupSijainti, mahdSijainti)) {
+					if(!uhattuRuutu(uhka, mahdSijainti)) {
+						return false;
+					}
+				}
+			}
+		}
+		
+		return true;
+	}
+	
+	// Palauttaa true jos annetun värinen nappula pystyy syömään nappulan annetusta ruudusta
+	//@param uhkaaja : väri joka voi syödä nappulan annetusta ruudusta
+	//@param ruutu : ruutu jonka uhka tarkistetaan
+	private boolean uhattuRuutu(Vari uhkaaja, int[] ruutu) {
+		for(Nappula n : nappulat) {
+			if(n.vari == uhkaaja) {
+				if(n.voikoLiikkuaRuutuun(ruutu)) {
+					if(tarkistaSiirtolinja(n.annaSijainti(), ruutu)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
 	//@return : return[0] == lähtökoordinaatti + return[1] == kohdekoordinaatti
 	private int[][] kysySiirto() {
 		Scanner scanner = new Scanner(System.in);
@@ -42,7 +110,7 @@ public class Lauta implements Serializable {
 		System.out.println(vari + " anna siirto:");
 		
 		//A1 A2 lähtöruutu *väli* kohderuutu
-		//@TODO : savegame tallentaa pelin
+		//TODO savegame tallentaa pelin
 		String syote = scanner.nextLine();
 		scanner.close();
 		
@@ -77,7 +145,7 @@ public class Lauta implements Serializable {
 			for(int s = 1; s < 9; s++) {
 				int[] sij = nappulat.get(index).annaSijainti();
 				if(sij[0] == s && sij[1] == r) {
-					rivi += " " +nappulat.get(index).toString();
+					rivi += " " + nappulat.get(index).toString();
 					rivi += " |";
 					if(index < nappulat.size()) {
 						index++;
