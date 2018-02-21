@@ -30,6 +30,8 @@ public class Lauta implements Serializable {
 			
 			if(liikutaNappulaa(lahto, kohde)) {
 				siirtoOnnistui = true;
+			}else {
+				System.out.println("Siirto ei mahdollinen!");
 			}
 		}
 		
@@ -241,9 +243,11 @@ public class Lauta implements Serializable {
 			for(int s = -1; r < 2; s++) {
 				mahdSijainti[0] += r;
 				mahdSijainti[1] += s;
-				if(kuningas.voikoLiikkuaRuutuun(mahdSijainti)) { //TODO onko liikkumisen tiellä nappula
-					if(!uhattuRuutu(uhka, mahdSijainti)) {
-						return false;
+				if(kuningas.voikoLiikkuaRuutuun(mahdSijainti)) { //pysyykö siirrettäessä laudalla
+					if(annaNappula(mahdSijainti) != null || annaNappula(mahdSijainti).vari == kuningas.vari) { //onko kohteessa omia nappuloita
+						if(!uhattuRuutu(uhka, mahdSijainti)) { //Onko kohde uhattu
+							return false;
+						}
 					}
 				}
 			}
