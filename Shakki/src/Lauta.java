@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Scanner;
 
 public class Lauta implements Serializable {
 
@@ -290,7 +289,6 @@ public class Lauta implements Serializable {
 	private int[][] kysySiirto() {
 		boolean kelvollinen = false;
 		int[][] siirto = new int[2][2];
-		Scanner scanner = new Scanner(System.in);
 		
 		while(!kelvollinen) {
 			
@@ -300,7 +298,7 @@ public class Lauta implements Serializable {
 			//A1 A2 lähtöruutu *väli* kohderuutu
 			//TODO savegame tallentaa pelin
 		
-			while(!scanner.hasNextLine()) {
+			while(!Peli.scanner.hasNextLine()) {
 				//Odotetaan syötettä
 				try {
 					//Tarkistetaan syötteen 100ms välein
@@ -313,14 +311,14 @@ public class Lauta implements Serializable {
 			
 			}
 		
-			String syote = scanner.nextLine();
+			String syote = Peli.scanner.nextLine();
 			
 			
 			syote = syote.toUpperCase();
 			
 			String tarkastus = "ABCDEFGH";
 			if(!(syote.length() == 5 && tarkastus.contains(syote.charAt(0) + "") && tarkastus.contains(syote.charAt(3) + ""))){
-				System.out.println("Virheellinen syöte (kirjain väärin)");
+				System.out.println("Virheellinen syöte");
 				continue;
 			}
 			
@@ -331,11 +329,10 @@ public class Lauta implements Serializable {
 			siirto[1][1] = Integer.parseInt(syote.charAt(4) + "");
 			kelvollinen = true;
 			}catch(NumberFormatException e){
-				System.out.println("Virheellinen syöte (numero väärin)");
+				System.out.println("Virheellinen syöte");
 				continue;
 			}
 		}
-		System.out.println("Siirto palautettu");
 		return siirto;
 	}
 
