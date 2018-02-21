@@ -44,6 +44,20 @@ public class Lauta implements Serializable {
 		
 	}
 	
+	//Palauttaa nappulan annetusta sijainnista jos sijainnissa ei ole nappulaa palauttaa null
+	//@param koord koordinatti josta nappulaa etsit‰‰n
+	//@return nappula joka on sijainnissa koord tai null jos sijainnissa ei ole nappulaa
+	private Nappula annaNappula(int[] koord) {
+		Nappula etsitty = null;
+		for(Nappula n : nappulat) {
+			if(n.annaSijainti()[0] == koord[0] && n.annaSijainti()[1] == koord[1]) {
+				etsitty = n;
+				break;
+			}
+		}
+		return etsitty;
+	}
+	
 	private void poistaNappula(int[] koord) {
 		for(Nappula n : nappulat) {
 			if(n.annaSijainti()[0] == koord[0] && n.annaSijainti()[1] == koord[1]) {
@@ -259,7 +273,7 @@ public class Lauta implements Serializable {
 			for(int s = -1; r < 2; s++) {
 				mahdSijainti[0] += r;
 				mahdSijainti[1] += s;
-				if(kuningas.voikoLiikkuaRuutuun(mahdSijainti) && tarkistaSiirtolinja(alkupSijainti, mahdSijainti)) {
+				if(kuningas.voikoLiikkuaRuutuun(mahdSijainti)) { //TODO onko liikkumisen tiell‰ nappula
 					if(!uhattuRuutu(uhka, mahdSijainti)) {
 						return false;
 					}
@@ -278,7 +292,18 @@ public class Lauta implements Serializable {
 	private boolean uhattuRuutu(Vari uhkaaja, int[] ruutu) {
 		for(Nappula n : nappulat) {
 			if(n.vari == uhkaaja) {
-				if(n.voikoLiikkuaRuutuun(ruutu)) {
+				if(n instanceof Sotilas) { // Sotilas syˆ eri tavalla kuin liikkuu
+					if(uhkaaja == Vari.MUSTA) {
+						if((ruutu[0] == n.annaSijainti()[0]+1 || ruutu[0] == n.annaSijainti()[0]-1) && ruutu[1] == n.annaSijainti()[1]-1) {
+							return true;
+						}
+					}else if(uhkaaja == Vari.MUSTA) {
+						if((ruutu[0] == n.annaSijainti()[0]+1 || ruutu[0] == n.annaSijainti()[0]-1) && ruutu[1] == n.annaSijainti()[1]+1) {
+							return true;
+						}
+					}
+				}
+				else if(n.voikoLiikkuaRuutuun(ruutu)) {
 					if(tarkistaSiirtolinja(n.annaSijainti(), ruutu)) {
 						return true;
 					}
