@@ -284,34 +284,54 @@ public class Lauta implements Serializable {
 	
 	//@return : return[0] == lähtökoordinaatti + return[1] == kohdekoordinaatti
 	private int[][] kysySiirto() {
-		Scanner scanner = new Scanner(System.in);
-		String vari = vuoro == Vari.VALKOINEN ? "Valkoinen" : "Musta"; 
-		System.out.print(vari + ", anna siirto: ");
-		
-		//A1 A2 lähtöruutu *väli* kohderuutu
-		//TODO savegame tallentaa pelin
-		String syote = scanner.nextLine();
-		scanner.close();
-		
-		syote = syote.toUpperCase();
+		boolean kelvollinen = false;
 		int[][] siirto = new int[2][2];
 		
-		String tarkastus = "ABCDEFGH";
-		if(!(tarkastus.contains(syote.charAt(0) + "") && tarkastus.contains(syote.charAt(3) + ""))){
-			System.out.println("Virheellinen syöte");
-			return kysySiirto();
-		}
+		while(!kelvollinen) {
+			Scanner scanner = new Scanner(System.in);
+			String vari = vuoro == Vari.VALKOINEN ? "Valkoinen" : "Musta"; 
+			System.out.print(vari + ", anna siirto: ");
 		
-		try {
-		siirto[0][0] = koordMuunnos.get(syote.charAt(0));
-		siirto[0][1] = Integer.parseInt(syote.charAt(1) + "");
-		siirto[1][0] = koordMuunnos.get(syote.charAt(3));
-		siirto[1][1] = Integer.parseInt(syote.charAt(4) + "");
-		}catch(NumberFormatException e){
-			System.out.println("Virheellinen syöte");
-			return kysySiirto();
-		}
+			//A1 A2 lähtöruutu *väli* kohderuutu
+			//TODO savegame tallentaa pelin
 		
+			while(!scanner.hasNextLine()) {
+				//Odotetaan syötettä
+				try {
+					//Tarkistetaan syötteen 100ms välein
+					Thread.sleep(100); //Ilman tätä odottaminen vie suoritinytimen lähes kaikki resurssit
+				}
+				catch(InterruptedException ie) {
+					//Pääthreadin keskeyttämisen tapahtuessa ei ole paljon tehtävissä
+					//mutta try-catch vaaditaan
+				}
+			
+			}
+		
+			String syote = scanner.nextLine();
+			scanner.close();
+			
+			syote = syote.toUpperCase();
+			
+			String tarkastus = "ABCDEFGH";
+			if(!(syote.length() == 5 && tarkastus.contains(syote.charAt(0) + "") && tarkastus.contains(syote.charAt(3) + ""))){
+				System.out.println("Virheellinen syöte (kirjain väärin)");
+				//return kysySiirto();
+				continue;
+			}
+			
+			try {
+			siirto[0][0] = koordMuunnos.get(syote.charAt(0));
+			siirto[0][1] = Integer.parseInt(syote.charAt(1) + "");
+			siirto[1][0] = koordMuunnos.get(syote.charAt(3));
+			siirto[1][1] = Integer.parseInt(syote.charAt(4) + "");
+			kelvollinen = true;
+			}catch(NumberFormatException e){
+				System.out.println("Virheellinen syöte (numero väärin)");
+				//return kysySiirto();
+				continue;
+			}
+		}
 		return siirto;
 	}
 
