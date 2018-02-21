@@ -260,6 +260,7 @@ public class Lauta implements Serializable {
 	// Palauttaa true jos annetun värinen nappula pystyy syömään nappulan annetusta ruudusta
 	//@param uhkaaja : väri joka voi syödä nappulan annetusta ruudusta
 	//@param ruutu : ruutu jonka uhka tarkistetaan
+	//@return : true jos ruutu on uhattu muuten false
 	private boolean uhattuRuutu(Vari uhkaaja, int[] ruutu) {
 		for(Nappula n : nappulat) {
 			if(n.vari == uhkaaja) {
@@ -275,7 +276,10 @@ public class Lauta implements Serializable {
 					}
 				}
 				else if(n.voikoLiikkuaRuutuun(ruutu)) {
-					if(tarkistaSiirtolinja(n.annaSijainti(), ruutu)) {
+					if(n instanceof Ratsu) { //Ratsu voi hypätä nappuloiden yli
+						return true;
+					}
+					else if(tarkistaSiirtolinja(n.annaSijainti(), ruutu)) {
 						return true;
 					}
 				}
