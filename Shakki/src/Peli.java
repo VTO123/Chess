@@ -7,7 +7,7 @@ public class Peli {
 		
 		
 		lauta.piirraLauta();
-		
+		lauta.pelaaVuoro();
 		
 	}
 	

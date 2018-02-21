@@ -286,9 +286,10 @@ public class Lauta implements Serializable {
 	private int[][] kysySiirto() {
 		boolean kelvollinen = false;
 		int[][] siirto = new int[2][2];
+		Scanner scanner = new Scanner(System.in);
 		
 		while(!kelvollinen) {
-			Scanner scanner = new Scanner(System.in);
+			
 			String vari = vuoro == Vari.VALKOINEN ? "Valkoinen" : "Musta"; 
 			System.out.print(vari + ", anna siirto: ");
 		
@@ -309,14 +310,13 @@ public class Lauta implements Serializable {
 			}
 		
 			String syote = scanner.nextLine();
-			scanner.close();
+			
 			
 			syote = syote.toUpperCase();
 			
 			String tarkastus = "ABCDEFGH";
 			if(!(syote.length() == 5 && tarkastus.contains(syote.charAt(0) + "") && tarkastus.contains(syote.charAt(3) + ""))){
 				System.out.println("Virheellinen syöte (kirjain väärin)");
-				//return kysySiirto();
 				continue;
 			}
 			
@@ -328,10 +328,10 @@ public class Lauta implements Serializable {
 			kelvollinen = true;
 			}catch(NumberFormatException e){
 				System.out.println("Virheellinen syöte (numero väärin)");
-				//return kysySiirto();
 				continue;
 			}
 		}
+		scanner.close();
 		return siirto;
 	}
 
