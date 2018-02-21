@@ -119,7 +119,6 @@ public class Lauta implements Serializable {
 		
 		//Sotilaalla on omat erikoissiirtonsa.
 		else if(siirrettava instanceof Sotilas){
-
 			
 			//Sotilas voi siirty‰ kaksi ruutua eteenp‰in aloitusrivilt‰‰n
 			//Valkoiset sotilaat aloittavat rivilt‰ 2 ja mustat rivilt‰ 7.
@@ -189,7 +188,7 @@ public class Lauta implements Serializable {
 		int[] tarkistettavaRuutu = new int[2];
 		tarkistettavaRuutu[0] = lahto[0] + siirtymaAlkio[0];
 		tarkistettavaRuutu[1] = lahto[1] + siirtymaAlkio[1];
-
+		
 		while(!(tarkistettavaRuutu[0] == kohde[0] && tarkistettavaRuutu[1] == kohde[1])){
 			//toistetaan kunnes ollaan kohderuudussa
 			
@@ -199,8 +198,8 @@ public class Lauta implements Serializable {
 			}
 			
 			//P‰ivitet‰‰n tarkistettava ruutu
-			tarkistettavaRuutu[0] = lahto[0] + siirtymaAlkio[0];
-			tarkistettavaRuutu[1] = lahto[1] + siirtymaAlkio[1];
+			tarkistettavaRuutu[0] += siirtymaAlkio[0];
+			tarkistettavaRuutu[1] += siirtymaAlkio[1];
 		}
 		//Jos miss‰‰n siirtym‰linjalle osuvassa ruudussa ei ollut nappulaa, palautetaan true.
 		return true;
@@ -283,7 +282,7 @@ public class Lauta implements Serializable {
 	private int[][] kysySiirto() {
 		Scanner scanner = new Scanner(System.in);
 		String vari = vuoro == Vari.VALKOINEN ? "Valkoinen" : "Musta"; 
-		System.out.println(vari + " anna siirto:");
+		System.out.println(vari + ", anna siirto: ");
 		
 		//A1 A2 l‰htˆruutu *v‰li* kohderuutu
 		//TODO savegame tallentaa pelin
