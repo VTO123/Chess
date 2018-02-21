@@ -125,7 +125,7 @@ public class Lauta implements Serializable {
 			int aloitusRivi = (siirrettava.vari == Vari.VALKOINEN) ? 2 : 7;
 			
 			//Jos sotilasta ei ole vielä siirretty sitä voi siirtää kaksi ruutua
-			if(siirrettava.annaSijainti()[1] == aloitusRivi && lahto[0] == kohde[0] && tarkistaSiirtolinja(lahto, kohde)){
+			if(siirrettava.annaSijainti()[1] == aloitusRivi && lahto[0] == kohde[0] && Math.abs(kohde[1] - lahto[1]) == 2  && tarkistaSiirtolinja(lahto, kohde)){
 				
 				//kohderuudussa ei saa olla nappulaa
 				if(annaNappula(kohde) != null) {
@@ -286,7 +286,7 @@ public class Lauta implements Serializable {
 	private int[][] kysySiirto() {
 		Scanner scanner = new Scanner(System.in);
 		String vari = vuoro == Vari.VALKOINEN ? "Valkoinen" : "Musta"; 
-		System.out.println(vari + ", anna siirto: ");
+		System.out.print(vari + ", anna siirto: ");
 		
 		//A1 A2 lähtöruutu *väli* kohderuutu
 		//TODO savegame tallentaa pelin
