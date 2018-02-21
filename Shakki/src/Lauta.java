@@ -253,7 +253,7 @@ public class Lauta implements Serializable {
 			}
 		}
 		
-		//TODO voidaanko shakkimatti est‰‰ seuraavalla siirrolla
+		// TODO Voidaanko shakkimatti est‰‰ siirt‰m‰ll‰ jotain muuta nappulaa kuin kunigasta
 		
 		return true;
 	}
