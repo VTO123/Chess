@@ -331,7 +331,7 @@ public class Lauta implements Serializable {
 				continue;
 			}
 		}
-		scanner.close();
+		System.out.println("Siirto palautettu");
 		return siirto;
 	}
 
