@@ -131,26 +131,30 @@ public class Lauta implements Serializable {
 				if(annaNappula(kohde) != null) {
 					return false;
 				}
+				
+				siirrettava.asetaSijainti(kohde);
+				return true;
+				
 			}
 			
 			
 			//Kyseessä voi myös olla syönti, jonka sotilas suorittaa vinoon
 			//Vinoon liikutaessa sijainti[0] muuttuu yhdellä (+ tai -)
 			//Valkoinen sotilas liikkuu laudalla ylöspäin ja musta alaspäin: valkoisella kohderuudun korkeuskoordinaatti on lahto[1] + 1 ja mustalla lahto[1] - 1.
-				if((kohde[0] == lahto[0] + 1 || kohde[0] == lahto[0] - 1) && kohde[1] == lahto[1] + ((vuoro == Vari.VALKOINEN) ? 1 : -1)){
-					
-					//Syönti onnistuu vain, jos kohderuudussa on vastustajan nappula
-					Nappula kohdeNappula = annaNappula(kohde);
-					if(kohdeNappula == null) {
-						return false;
-					}
-					else if(kohdeNappula.vari != vuoro) {
-						poistaNappula(kohde);
-						siirrettava.asetaSijainti(kohde);
-						return true;
-					}
+			if((kohde[0] == lahto[0] + 1 || kohde[0] == lahto[0] - 1) && kohde[1] == lahto[1] + ((vuoro == Vari.VALKOINEN) ? 1 : -1)){
+				
+				//Syönti onnistuu vain, jos kohderuudussa on vastustajan nappula
+				Nappula kohdeNappula = annaNappula(kohde);
+				if(kohdeNappula == null) {
 					return false;
 				}
+				else if(kohdeNappula.vari != vuoro) {
+					poistaNappula(kohde);
+					siirrettava.asetaSijainti(kohde);
+					return true;
+				}
+				return false;
+			}
 			
 			return false;
 			
