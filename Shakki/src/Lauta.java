@@ -78,14 +78,7 @@ public class Lauta implements Serializable {
 	
 	private boolean liikutaNappulaa(int[] lahto, int[] kohde) {
 		//Tarkistetaan onko annetussa l‰htˆruudussa nappula
-		Nappula siirrettava = null;
-		for(Nappula n : nappulat){
-			if(n.annaSijainti()[0] == lahto[0] && n.annaSijainti()[1] == lahto[1]){
-				siirrettava = n;
-				//Loppuja nappuloita ei tarvitse tarkistaa
-				break;
-			}
-		}
+		Nappula siirrettava = annaNappula(lahto);
 		
 		//Tyhj‰st‰ ruudusta tai vastustajan nappulaa ei voi siirt‰‰
 		if(siirrettava == null || siirrettava.vari != vuoro){
@@ -101,16 +94,8 @@ public class Lauta implements Serializable {
 				return false;
 			}
 			
-			//Tarkistetaan onko kohderuudussa nappulaa;
-			//oma est‰‰ siirtymisen ja vastustaja syˆd‰‰n
-			Nappula kohdeNappula = null;
-			for(Nappula n : nappulat){
-				if(n.annaSijainti()[0] == kohde[0] && n.annaSijainti()[1] == kohde[1]){
-					kohdeNappula = n;
-					//Loppuja nappuloita ei tarvitse tarkistaa
-					break;
-				}
-			}
+			//Tarkistetaan onko kohderuudussa nappulaa
+			Nappula kohdeNappula = annaNappula(kohde);
 			
 			//Jos kohderuudussa ei nappulaa, siirret‰‰n.
 			if(kohdeNappula == null){
@@ -130,8 +115,11 @@ public class Lauta implements Serializable {
 			}
 			
 		}
+		
+		
+		//Sotilaalla on omat erikoissiirtonsa.
 		else if(siirrettava instanceof Sotilas){
-			//Sotilaalla on omat erikoissiirtonsa.
+
 			
 			//Sotilas voi siirty‰ kaksi ruutua eteenp‰in aloitusrivilt‰‰n
 			//Valkoiset sotilaat aloittavat rivilt‰ 2 ja mustat rivilt‰ 7.
@@ -141,58 +129,35 @@ public class Lauta implements Serializable {
 			if(siirrettava.annaSijainti()[1] == aloitusRivi && lahto[0] == kohde[0] && tarkistaSiirtolinja(lahto, kohde)){
 				
 				//kohderuudussa ei saa olla nappulaa
-				for(Nappula n : nappulat){
-					if(n.annaSijainti()[0] == kohde[0] && n.annaSijainti()[1] == kohde[1]){
-						return false;
-					}
+				if(annaNappula(kohde) != null) {
+					return false;
 				}
 			}
 			
 			
 			//Kyseess‰ voi myˆs olla syˆnti, jonka sotilas suorittaa vinoon
-			
-			//Valkoinen sotilas liikkuu ylˆsp‰in laudalla
-			if(vuoro == Vari.VALKOINEN){
-				if((kohde[0] == lahto[0] + 1 || kohde[0] == lahto[0] - 1) && kohde[1] == lahto[1] + 1){
-					//Onnistuu vain jos kohderuudussa on vastustajan nappula
-					for(Nappula n : nappulat){
-						if(n.annaSijainti()[0] == kohde[0] && n.annaSijainti()[1] == kohde[1]){
-							if(n.vari != vuoro){
-								poistaNappula(kohde);
-								siirrettava.asetaSijainti(kohde);
-								return true;
-							}
-							return false;	//Omaa nappulaa ei voi lyˆd‰
-						}
-					}
+			//Vinoon liikutaessa sijainti[0] muuttuu yhdell‰ (+ tai -)
+			//Valkoinen sotilas liikkuu laudalla ylˆsp‰in ja musta alasp‰in: valkoisella kohderuudun korkeuskoordinaatti on lahto[1] + 1 ja mustalla lahto[1] - 1.
+				if((kohde[0] == lahto[0] + 1 || kohde[0] == lahto[0] - 1) && kohde[1] == lahto[1] + ((vuoro == Vari.VALKOINEN) ? 1 : -1)){
 					
-				}
-			}
-			//Musta sotilas liikkuu alasp‰in laudalla
-			else if(vuoro == Vari.MUSTA){
-				if((kohde[0] == lahto[0] + 1 || kohde[0] == lahto[0] - 1) && kohde[1] == lahto[1] - 1){
-					//Onnistuu vain jos kohderuudussa on vastustajan nappula
-					for(Nappula n : nappulat){
-						if(n.annaSijainti()[0] == kohde[0] && n.annaSijainti()[1] == kohde[1]){
-							if(n.vari != vuoro){
-								poistaNappula(kohde);
-								siirrettava.asetaSijainti(kohde);
-								return true;
-							}
-							return false;	//Omaa nappulaa ei voi lyˆd‰
-						}
+					//Syˆnti onnistuu vain, jos kohderuudussa on vastustajan nappula
+					Nappula kohdeNappula = annaNappula(kohde);
+					if(kohdeNappula == null) {
+						return false;
 					}
-					
+					else if(kohdeNappula.vari != vuoro) {
+						poistaNappula(kohde);
+						siirrettava.asetaSijainti(kohde);
+						return true;
+					}
+					return false;
 				}
-			}
-			
-			//TODO en passant?
 			
 			return false;
 			
 		}
 		else{
-			//Laiton siirto
+			//Nappula ei voi omien s‰‰ntˆjens‰ mukaan liikkua ruutuun -> laiton siirto
 			return false;
 		}
 	}
@@ -229,12 +194,8 @@ public class Lauta implements Serializable {
 			//toistetaan kunnes ollaan kohderuudussa
 			
 			//Tarkistetaan tarkistettava ruutu nappuloiden varalta.
-			for(Nappula n : nappulat){
-				
-				//Palautetaan false jos jokin nappula on tarkistettavassa ruudussa
-				if(n.annaSijainti()[0] == tarkistettavaRuutu[0] && n.annaSijainti()[1] == tarkistettavaRuutu[1]){
-					return false;
-				}
+			if(annaNappula(tarkistettavaRuutu) != null) {
+				return false;
 			}
 			
 			//P‰ivitet‰‰n tarkistettava ruutu
@@ -247,6 +208,10 @@ public class Lauta implements Serializable {
 	}
 	
 
+	
+	
+	
+	
 	//palauttaa true jos shakkimatti
 	private boolean onkoShakkiMatti() {
 		Nappula kuningas = null;
@@ -413,7 +378,7 @@ public class Lauta implements Serializable {
 		nappulat.add(new Torni(Vari.VALKOINEN, new int[] {8, 1}));
 	}
 
-	//Alustaa HashMap olion jota k‰ytet‰‰n kirjainkoordinaattian muuntamiseen luvuiksi
+	//Alustaa HashMap olion jota k‰ytet‰‰n kirjainkoordinaattien muuntamiseen luvuiksi
 	private void alustaKoordMuunnos() {
 		koordMuunnos = new HashMap<>();
 		koordMuunnos.put('A', 1);
