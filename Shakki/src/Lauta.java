@@ -8,7 +8,7 @@ public class Lauta implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private ArrayList<Nappula> nappulat;
-	private Vari vuoro;
+	public Vari vuoro;
 	private HashMap<Character, Integer> koordMuunnos;
 	
 	public Lauta() {
@@ -48,7 +48,7 @@ public class Lauta implements Serializable {
 	//Palauttaa nappulan annetusta sijainnista jos sijainnissa ei ole nappulaa palauttaa null
 	//@param koord koordinatti josta nappulaa etsitään
 	//@return nappula joka on sijainnissa koord tai null jos sijainnissa ei ole nappulaa
-	private Nappula annaNappula(int[] koord) {
+	Nappula annaNappula(int[] koord) {
 		Nappula etsitty = null;
 		for(Nappula n : nappulat) {
 			if(n.annaSijainti()[0] == koord[0] && n.annaSijainti()[1] == koord[1]) {
@@ -88,79 +88,18 @@ public class Lauta implements Serializable {
 		
 		if(siirrettava.voikoLiikkuaRuutuun(kohde)){
 			//Tämä suoritetaan, jos siirto on sallittu nappulan omien liikkumissääntöjen puitteissa
-			//(poikkeus: sotilaan erikoissiirrot syöminen, ensimmäinen liikkuminen, ohilyönti)
+			//ja laudan nappulatilanne sallii siirron
 			
-			//Jos lähtö- ja kohderuudun välissä on nappuloita, ei voi siirtää (paitsi ratsua)
-			if(!tarkistaSiirtolinja(lahto, kohde) && ! (siirrettava instanceof Ratsu)){
-				return false;
-			}
-			
-			//Tarkistetaan onko kohderuudussa nappulaa
-			Nappula kohdeNappula = annaNappula(kohde);
-			
-			//Jos kohderuudussa ei nappulaa, siirretään.
-			if(kohdeNappula == null){
-				siirrettava.asetaSijainti(kohde);
-				return true;
-			}
-			
-			//Vastustaja syödään ja siirretään siirrettävää nappulaa
-			//Sotilas ei voi syödä eteenpäin
-			else if(kohdeNappula.vari != vuoro && !(siirrettava instanceof Sotilas)){
+			Nappula syotava = annaNappula(kohde);
+			//Jos kohderuudussa on nappula, sen on pakko olla vastustaja, koska voikoLiikkuaRuutuun-
+			//metodi palauttaa false jos yritetään syödä omaa.
+			if(syotava != null) {
 				poistaNappula(kohde);
-				siirrettava.asetaSijainti(kohde);
-				return true;
 			}
-			//Oman nappulan päälle ei voi siirtää
-			else{
-				return false;
-			}
-			
+			siirrettava.asetaSijainti(kohde);
+			return true;
 		}
 		
-		
-		//Sotilaalla on omat erikoissiirtonsa.
-		else if(siirrettava instanceof Sotilas){
-			
-			//Sotilas voi siirtyä kaksi ruutua eteenpäin aloitusriviltään
-			//Valkoiset sotilaat aloittavat riviltä 2 ja mustat riviltä 7.
-			int aloitusRivi = (siirrettava.vari == Vari.VALKOINEN) ? 2 : 7;
-			
-			//Jos sotilasta ei ole vielä siirretty sitä voi siirtää kaksi ruutua
-			if(siirrettava.annaSijainti()[1] == aloitusRivi && lahto[0] == kohde[0] && Math.abs(kohde[1] - lahto[1]) == 2  && tarkistaSiirtolinja(lahto, kohde)){
-				
-				//kohderuudussa ei saa olla nappulaa
-				if(annaNappula(kohde) != null) {
-					return false;
-				}
-				
-				siirrettava.asetaSijainti(kohde);
-				return true;
-				
-			}
-			
-			
-			//Kyseessä voi myös olla syönti, jonka sotilas suorittaa vinoon
-			//Vinoon liikutaessa sijainti[0] muuttuu yhdellä (+ tai -)
-			//Valkoinen sotilas liikkuu laudalla ylöspäin ja musta alaspäin: valkoisella kohderuudun korkeuskoordinaatti on lahto[1] + 1 ja mustalla lahto[1] - 1.
-			if((kohde[0] == lahto[0] + 1 || kohde[0] == lahto[0] - 1) && kohde[1] == lahto[1] + ((vuoro == Vari.VALKOINEN) ? 1 : -1)){
-				
-				//Syönti onnistuu vain, jos kohderuudussa on vastustajan nappula
-				Nappula kohdeNappula = annaNappula(kohde);
-				if(kohdeNappula == null) {
-					return false;
-				}
-				else if(kohdeNappula.vari != vuoro) {
-					poistaNappula(kohde);
-					siirrettava.asetaSijainti(kohde);
-					return true;
-				}
-				return false;
-			}
-			
-			return false;
-			
-		}
 		else{
 			//Nappula ei voi omien sääntöjensä mukaan liikkua ruutuun -> laiton siirto
 			return false;
@@ -171,7 +110,7 @@ public class Lauta implements Serializable {
 	/*
 	 * Palauttaa true, jos lähtö- ja kohderuudun välissä ei ole nappuloita.
 	 */
-	private boolean tarkistaSiirtolinja(int[] lahto, int[] kohde){
+	boolean tarkistaSiirtolinja(int[] lahto, int[] kohde){
 		
 		//Siirtymäalkio kertoo siirroksen suunnan.
 		int[] siirtymaAlkio = new int[2];
@@ -383,28 +322,28 @@ public class Lauta implements Serializable {
 	
 	//Luo pelinappulat ja asettaa niiden sijainnit shakin alkutilanteen mukaisiksi
 	private void alustaNappulat() {
-		nappulat.add(new Torni(Vari.MUSTA, new int[] {1, 8}));
-		nappulat.add(new Ratsu(Vari.MUSTA, new int[] {2, 8}));
-		nappulat.add(new Lahetti(Vari.MUSTA, new int[] {3, 8}));
-		nappulat.add(new Kuningatar(Vari.MUSTA, new int[] {4, 8}));
-		nappulat.add(new Kuningas(Vari.MUSTA, new int[] {5, 8}));
-		nappulat.add(new Lahetti(Vari.MUSTA, new int[] {6, 8}));
-		nappulat.add(new Ratsu(Vari.MUSTA, new int[] {7, 8}));
-		nappulat.add(new Torni(Vari.MUSTA, new int[] {8, 8}));
+		nappulat.add(new Torni(Vari.MUSTA, new int[] {1, 8}, this));
+		nappulat.add(new Ratsu(Vari.MUSTA, new int[] {2, 8}, this));
+		nappulat.add(new Lahetti(Vari.MUSTA, new int[] {3, 8}, this));
+		nappulat.add(new Kuningatar(Vari.MUSTA, new int[] {4, 8}, this));
+		nappulat.add(new Kuningas(Vari.MUSTA, new int[] {5, 8}, this));
+		nappulat.add(new Lahetti(Vari.MUSTA, new int[] {6, 8}, this));
+		nappulat.add(new Ratsu(Vari.MUSTA, new int[] {7, 8}, this));
+		nappulat.add(new Torni(Vari.MUSTA, new int[] {8, 8}, this));
 		for(int i = 1; i < 9; i++) {
-			nappulat.add(new Sotilas(Vari.MUSTA, new int[] {i, 7}));
+			nappulat.add(new Sotilas(Vari.MUSTA, new int[] {i, 7}, this));
 		}
 		for(int i = 1; i < 9; i++) {
-			nappulat.add(new Sotilas(Vari.VALKOINEN, new int[] {i, 2}));
+			nappulat.add(new Sotilas(Vari.VALKOINEN, new int[] {i, 2}, this));
 		}
-		nappulat.add(new Torni(Vari.VALKOINEN, new int[] {1, 1}));
-		nappulat.add(new Ratsu(Vari.VALKOINEN, new int[] {2, 1}));
-		nappulat.add(new Lahetti(Vari.VALKOINEN, new int[] {3, 1}));
-		nappulat.add(new Kuningatar(Vari.VALKOINEN, new int[] {4, 1}));
-		nappulat.add(new Kuningas(Vari.VALKOINEN, new int[] {5, 1}));
-		nappulat.add(new Lahetti(Vari.VALKOINEN, new int[] {6, 1}));
-		nappulat.add(new Ratsu(Vari.VALKOINEN, new int[] {7, 1}));
-		nappulat.add(new Torni(Vari.VALKOINEN, new int[] {8, 1}));
+		nappulat.add(new Torni(Vari.VALKOINEN, new int[] {1, 1}, this));
+		nappulat.add(new Ratsu(Vari.VALKOINEN, new int[] {2, 1}, this));
+		nappulat.add(new Lahetti(Vari.VALKOINEN, new int[] {3, 1}, this));
+		nappulat.add(new Kuningatar(Vari.VALKOINEN, new int[] {4, 1}, this));
+		nappulat.add(new Kuningas(Vari.VALKOINEN, new int[] {5, 1}, this));
+		nappulat.add(new Lahetti(Vari.VALKOINEN, new int[] {6, 1}, this));
+		nappulat.add(new Ratsu(Vari.VALKOINEN, new int[] {7, 1}, this));
+		nappulat.add(new Torni(Vari.VALKOINEN, new int[] {8, 1}, this));
 	}
 
 	//Alustaa HashMap olion jota käytetään kirjainkoordinaattien muuntamiseen luvuiksi

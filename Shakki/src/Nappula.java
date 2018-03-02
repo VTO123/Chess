@@ -2,12 +2,14 @@
 public abstract class Nappula implements Comparable<Nappula>{
 	
 	public final Vari vari;
+	protected final Lauta lauta;
 	
 	//Sijainti: ensimmäinen arvo vastaa pystyrivin kirjainta a-h ja toinen vaakarivin numeroa
 	protected int[] sijainti = new int[2];
 	
-	public Nappula(Vari vari, int[] sijainti){
+	public Nappula(Vari vari, int[] sijainti, Lauta lauta){
 		this.vari = vari;
+		this.lauta = lauta;
 		if(sijainti[0] < 1 || sijainti[1] > 8
 				|| sijainti[1] < 1 || sijainti[1] > 8){
 			throw new IllegalArgumentException("Nappula ulkona laudalta!");

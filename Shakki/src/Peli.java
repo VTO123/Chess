@@ -8,11 +8,11 @@ public class Peli {
 		
 		Lauta lauta = new Lauta();
 		
-		
 		lauta.piirraLauta();
-		lauta.pelaaVuoro();
-		
-		
+		for(int i = 0; i < 10; i++) {
+
+			lauta.pelaaVuoro();
+		}
 		
 		scanner.close();
 	}
