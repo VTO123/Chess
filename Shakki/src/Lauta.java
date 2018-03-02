@@ -1,3 +1,9 @@
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -371,14 +377,19 @@ public class Lauta implements Serializable {
 		System.out.println("    a    b    c    d    e    f    g    h");
 	}
 	
-	//TODO
-	public void tallennaLauta() {
-		
+	//Tallentaa laudan tilan Save.txt tiedostoon
+	public void tallennaLauta() throws FileNotFoundException, IOException {
+		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("Save.txt"));
+		out.writeObject(this);
+		out.close();
 	}
 	
-	//TODO
-	public void lataaLauta() {
-		
+	//Lataa tallennetun laudan tilan Save.txt tiedostosta
+	//@param lauta Lauta-olio johon tallennettu tila ladataan
+	public void lataaLauta(Lauta lauta) throws FileNotFoundException, IOException, ClassNotFoundException {
+		ObjectInputStream in = new ObjectInputStream(new FileInputStream("Save.txt"));
+		lauta = (Lauta) in.readObject();
+		in.close();
 	}
 	
 	//Luo pelinappulat ja asettaa niiden sijainnit shakin alkutilanteen mukaisiksi
