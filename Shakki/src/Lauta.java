@@ -291,6 +291,9 @@ public class Lauta implements Serializable {
 		Collections.sort(nappulat);
 		
 		int index = 0;
+		
+		//Sarakkeita vastaavat kirjaimet yl‰reunaan
+		System.out.println("    a    b    c    d    e    f    g    h");
 		System.out.println("  -----------------------------------------");
 		
 		//K‰yd‰‰n l‰pi ruudut rivi kerallaan ylh‰‰lt‰ alas ja tulostetaan nappulat paikoilleen
@@ -300,7 +303,7 @@ public class Lauta implements Serializable {
 				int[] sij = nappulat.get(index).annaSijainti();
 				if(sij[0] == s && sij[1] == r) {
 					rivi += " " + nappulat.get(index).toString();
-					rivi += " |";
+					rivi += " | " + r; //Rivin numerot oikeaan reunaan
 					if(index < nappulat.size()) {
 						index++;
 					}
@@ -311,7 +314,7 @@ public class Lauta implements Serializable {
 			System.out.println(rivi);
 			System.out.println("  -----------------------------------------");
 		}
-		//Saakkeita vastaavat kirjaimet alareunaan
+		//Sarakkeita vastaavat kirjaimet alareunaan
 		System.out.println("    a    b    c    d    e    f    g    h");
 	}
 	
