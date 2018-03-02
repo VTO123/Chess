@@ -1,8 +1,8 @@
 
 public class Kuningas extends Nappula{
 	
-	public Kuningas(Vari vari, int[] sijainti) {
-		super(vari, sijainti);
+	public Kuningas(Vari vari, int[] sijainti, Lauta lauta) {
+		super(vari, sijainti, lauta);
 	}
 	
 	/*
@@ -24,6 +24,9 @@ public class Kuningas extends Nappula{
 		siirtyma[0] = (int) Math.abs(sijainti[0] - ruutu[0]);
 		siirtyma[1] = (int) Math.abs(sijainti[1] - ruutu[1]);
 		
+		if(lauta.annaNappula(ruutu) != null && lauta.annaNappula(ruutu).vari == vari) {
+			return false; // omaa ei voi syödä
+		}
 		//Siirrytään vinottain yksi ruutu
 		if(siirtyma[0] == 1 && siirtyma[1] == 1) {
 			return true;
@@ -37,7 +40,6 @@ public class Kuningas extends Nappula{
 		else if(siirtyma[0] == 1 && siirtyma[1] == 0) {
 			return true;
 		}
-		
 		return false;
 		
 	}

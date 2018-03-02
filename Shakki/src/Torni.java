@@ -1,8 +1,8 @@
 
 public class Torni extends Nappula{
 	
-	public Torni(Vari vari, int[] sijainti){
-		super(vari, sijainti);
+	public Torni(Vari vari, int[] sijainti, Lauta lauta){
+		super(vari, sijainti, lauta);
 	}
 	
 	
@@ -16,19 +16,30 @@ public class Torni extends Nappula{
 	public boolean voikoLiikkuaRuutuun(int[] ruutu){
 		//Torni voi liikkua vain suoraan riviä tai saraketta pitkin.
 		
-		
-		if(ruutu[0] == sijainti[0] && ruutu[1] != sijainti[1]){
-			//Katsotaan vielä onko kohderuutu laudalla
-			if(ruutu[1] >= 1 && ruutu[1] <= 8){
-				return true;
-			}
+		//Tarkistetaan että annettu ruutu on laudalla
+		if(ruutu[0] < 1 || ruutu[0] > 8 || ruutu[1] < 1 || ruutu[1] > 8) {
 			throw new IllegalArgumentException("Kohderuutu laudan ulkopuolella!");
 		}
-		else if(ruutu[0] != sijainti[0] && ruutu[1] == sijainti[1]){
-			if(ruutu[0] >= 1 && ruutu[0] <= 8){
-				return true;
+		
+		if(lauta.annaNappula(ruutu) != null && lauta.annaNappula(ruutu).vari == vari) {
+			return false; // omaa ei voi syödä
+		}
+		
+		
+		if(ruutu[0] == sijainti[0] && ruutu[1] != sijainti[1]){
+			
+			if(! (lauta.tarkistaSiirtolinja(sijainti, ruutu))) {
+				return false; //nappuloiden yli ei voi hypätä
 			}
-			throw new IllegalArgumentException("Kohderuutu laudan ulkopuolella!");
+			return true;
+		}
+		else if(ruutu[0] != sijainti[0] && ruutu[1] == sijainti[1]){
+			
+			if(! (lauta.tarkistaSiirtolinja(sijainti, ruutu))) {
+				return false; //nappuloiden yli ei voi hypätä
+			}
+			return true;
+			
 		}
 		return false;
 		

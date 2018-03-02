@@ -1,8 +1,8 @@
 
 public class Ratsu extends Nappula{
 	
-	public Ratsu(Vari vari, int[] sijainti) {
-		super(vari, sijainti);
+	public Ratsu(Vari vari, int[] sijainti, Lauta lauta) {
+		super(vari, sijainti, lauta);
 	}
 	
 	@Override
@@ -11,6 +11,10 @@ public class Ratsu extends Nappula{
 		//Tarkistetaan että annettu ruutu on laudalla
 		if(ruutu[0] < 1 || ruutu[0] > 8 || ruutu[1] < 1 || ruutu[1] > 8) {
 			throw new IllegalArgumentException("Kohderuutu laudan ulkopuolella!");
+		}
+		
+		if(lauta.annaNappula(ruutu) != null && lauta.annaNappula(ruutu).vari == vari) {
+			return false; // omaa ei voi syödä
 		}
 		
 		//Ratsu siirtyy yhteen suuntaan kaksi ruutua ja sitten kohtisuoraan yhden ruudun.

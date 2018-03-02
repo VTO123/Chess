@@ -1,8 +1,8 @@
 
 public class Lahetti extends Nappula{
 
-	public Lahetti(Vari vari, int[] sijainti){
-		super(vari, sijainti);
+	public Lahetti(Vari vari, int[] sijainti, Lauta lauta){
+		super(vari, sijainti, lauta);
 	}
 	
 	
@@ -18,6 +18,10 @@ public class Lahetti extends Nappula{
 			throw new IllegalArgumentException("Kohderuutu laudan ulkopuolella!");
 		}
 		
+		if(lauta.annaNappula(ruutu) != null && lauta.annaNappula(ruutu).vari == vari) {
+			return false; // omaa ei voi syödä
+		}
+		
 		//Lähetti voi liikkua vain vinottain.
 		//Siten vaakasuuntaisen muutoksen itseisarvon tulee
 		//vastata pystysuuntaisen muutoksen itseisarvoa.
@@ -28,6 +32,10 @@ public class Lahetti extends Nappula{
 		
 		//Siirtymä ei saa olla myöskään nolla
 		if(siirtyma[0] == siirtyma[1] && siirtyma[0] != 0) {
+			
+			if(! (lauta.tarkistaSiirtolinja(sijainti, ruutu))) {
+				return false; //nappuloiden yli ei voi hypätä
+			}
 			return true;
 		}
 		
