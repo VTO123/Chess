@@ -106,7 +106,7 @@ public class Lauta implements Serializable {
 			
 			//Vastustaja syödään ja siirretään siirrettävää nappulaa
 			//Sotilas ei voi syödä eteenpäin
-			else if(kohdeNappula.vari != vuoro && !(siirrettava instanceof Sotilas)){
+			else if(kohdeNappula.vari != vuoro){
 				poistaNappula(kohde);
 				siirrettava.asetaSijainti(kohde);
 				return true;
