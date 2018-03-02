@@ -1,5 +1,6 @@
+import java.io.Serializable;
 
-public abstract class Nappula implements Comparable<Nappula>{
+public abstract class Nappula implements Comparable<Nappula>, Serializable{
 	
 	public final Vari vari;
 	protected final Lauta lauta;
