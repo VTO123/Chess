@@ -303,7 +303,7 @@ public class Lauta implements Serializable {
 				int[] sij = nappulat.get(index).annaSijainti();
 				if(sij[0] == s && sij[1] == r) {
 					rivi += " " + nappulat.get(index).toString();
-					rivi += " | " + r; //Rivin numerot oikeaan reunaan
+					rivi += " |"; //Rivin numerot oikeaan reunaan
 					if(index < nappulat.size()) {
 						index++;
 					}
@@ -311,7 +311,7 @@ public class Lauta implements Serializable {
 					rivi += "    |";
 				}
 			}
-			System.out.println(rivi);
+			System.out.println(rivi + " " + r);
 			System.out.println("  -----------------------------------------");
 		}
 		//Sarakkeita vastaavat kirjaimet alareunaan
