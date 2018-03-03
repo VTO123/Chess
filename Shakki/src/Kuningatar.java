@@ -10,7 +10,7 @@ public class Kuningatar extends Nappula{
 		
 		//Tarkistetaan että annettu ruutu on laudalla
 		if(ruutu[0] < 1 || ruutu[0] > 8 || ruutu[1] < 1 || ruutu[1] > 8) {
-			throw new IllegalArgumentException("Kohderuutu laudan ulkopuolella!");
+			return false;
 		}
 		
 		//Kuningatar voi liikkua vinottain tai suoraan.
