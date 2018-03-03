@@ -183,17 +183,26 @@ public class Lauta implements Serializable {
 		}
 		
 		//Tarkistetaan onko kunigas uhattuna vaikka sitä siirrettäisiin
+		//Eli tarkistetaan ovatko kuninkaan ympärillä olevat ruuduissa nappula tai uhka.
 		for(int r = -1; r < 2; r++) {
-			for(int s = -1; r < 2; s++) {
-				mahdSijainti[0] += r;
-				mahdSijainti[1] += s;
-				if(kuningas.voikoLiikkuaRuutuun(mahdSijainti)) { //pysyykö siirrettäessä laudalla
-					if(annaNappula(mahdSijainti) != null || annaNappula(mahdSijainti).vari == kuningas.vari) { //onko kohteessa omia nappuloita
-						if(!uhattuRuutu(uhka, mahdSijainti)) { //Onko kohde uhattu
-							return false;
-						}
-					}
+			for(int s = -1; s < 2; s++) {
+				mahdSijainti[0] = alkupSijainti[0] + s; // [0] on pystysarakkeen numero (kirjain)
+				mahdSijainti[1] = alkupSijainti[1] + r; // [1] on vaakarivin numero
+				
+				if(mahdSijainti[0] < 1 || mahdSijainti[0] > 8 || mahdSijainti[1] < 1 || mahdSijainti[1] > 8) {
+					continue; //Laudan ulkopuoliset ruudut eivät voi pelastaa kuningasta
 				}
+				
+				
+				if(!kuningas.voikoLiikkuaRuutuun(mahdSijainti)) {
+					continue; //Tähän ruutuun ei voida siirtyä
+				}
+					
+				if(!uhattuRuutu(uhka, mahdSijainti)) { //Onko kohde uhattu
+					return false;
+				}
+				
+				
 			}
 		}
 		
