@@ -16,12 +16,15 @@ public class Lauta implements Serializable {
 	private ArrayList<Nappula> nappulat;
 	public Vari vuoro;
 	private HashMap<Character, Integer> koordMuunnos;
+	private boolean shakki;
+	
 	
 	public Lauta() {
 		nappulat = new ArrayList<>();
 		vuoro = Vari.VALKOINEN;
 		alustaNappulat();
 		alustaKoordMuunnos();
+		shakki = false;
 	}
 	
 	public void pelaaVuoro() {
@@ -40,10 +43,11 @@ public class Lauta implements Serializable {
 			}
 		}
 		
-		//Piirretään lauta ja tarkistataan mahdollinen shakkimatti
+		//Piirretään lauta ja tarkistetaan mahdollinen shakkimatti
 		piirraLauta();
-		if(onkoShakkiMatti()) {
-			System.out.println("Shakki ja Matti");
+		if(onkoShakki()) {
+			System.out.println("Shakki!");
+			shakki = true;
 		}
 		
 		//Vaihdetaan vuorossa olevaa väriä
@@ -51,9 +55,12 @@ public class Lauta implements Serializable {
 		
 	}
 	
-	//Palauttaa nappulan annetusta sijainnista jos sijainnissa ei ole nappulaa palauttaa null
-	//@param koord koordinatti josta nappulaa etsitään
-	//@return nappula joka on sijainnissa koord tai null jos sijainnissa ei ole nappulaa
+	/**
+	 * Palauttaa nappulan annetusta sijainnista jos sijainnissa ei ole nappulaa palauttaa null
+	 * 
+	 * @param koord koordinaatti josta nappulaa etsitään
+	 * @return nappula joka on sijainnissa koord tai null jos sijainnissa ei ole nappulaa
+	 */
 	Nappula annaNappula(int[] koord) {
 		Nappula etsitty = null;
 		for(Nappula n : nappulat) {
@@ -77,10 +84,15 @@ public class Lauta implements Serializable {
 	
 	
 	
-	/*
+	/**
 	 * Palauttaa true ja siirtää lahto- koordinaatissa olevan nappulan kohde- koordinaattiin,
 	 * jos annettu siirto on laillinen. Muulloin palauttaa false.
 	 * Tämä metodi hoitaa nappuloiden syömisen tarvittaessa.
+	 * 
+	 * @param lahto Ruutu, jossa olevaa nappulaa liikutetaan
+	 * @param kohde Ruutu, johon nappulaa liikutetaan
+	 * @return tehtiinkö siirto (eli oliko se laillinen)
+	 * 
 	 */
 	
 	private boolean liikutaNappulaa(int[] lahto, int[] kohde) {
@@ -103,6 +115,39 @@ public class Lauta implements Serializable {
 				poistaNappula(kohde);
 			}
 			siirrettava.asetaSijainti(kohde);
+			
+			//Jos siirtäjää shakataan, niin vain kuninkaan pelastavat siirrot ovat laillisia.
+			//Shakkaustilanne tulee purkaa siirtämällä, joten täytyy katsoa laudan tilanteen muututtua.
+			if(shakki) {
+				//Etsitään shakattu kuningas
+				Nappula uhattuKuningas = null;
+				for(Nappula n : nappulat) {
+					if(n instanceof Kuningas && n.vari == vuoro) {
+						uhattuKuningas = n;
+						break;
+					}
+				}
+				//Shakkaajan väri
+				Vari uhka = (vuoro == Vari.VALKOINEN ? Vari.MUSTA : Vari.VALKOINEN);
+				
+				//Jos siirron jälkeenkin siirtäjän kuningasta shakataan, siirto on laiton ja se täytyy peruuttaa.
+				if(uhattuRuutu(uhka, uhattuKuningas.annaSijainti())) {
+					//lisätään mahdollisesti syöty nappula takaisin laudalle
+					if(syotava != null) {
+						nappulat.add(syotava);
+					}
+					//ja siirretään siirretty nappula takaisin lähtöruutuunsa
+					siirrettava.asetaSijainti(lahto);
+					return false;
+				}
+				
+				//Muuten siirto oli ok ja shakki torjuttiin
+				shakki = false;
+				
+			}
+			
+			
+			
 			return true;
 		}
 		else{
@@ -156,9 +201,32 @@ public class Lauta implements Serializable {
 		
 	}
 	
-
-	
-	
+	/**
+	 * Palauttaa true jos kuningasta uhataan
+	 * 
+	 * @return onko shakkaus tapahtunut
+	 */
+	private boolean onkoShakki() {
+		Nappula kuningas = null;
+		
+		//Etsitään kuningas joka saattaa olla uhattuna
+		for(Nappula n : nappulat) {
+			if(n instanceof Kuningas && n.vari != vuoro) {
+				kuningas = n;
+				break;
+			}
+		}
+		
+		Vari uhka = kuningas.vari == Vari.VALKOINEN ? Vari.MUSTA : Vari.VALKOINEN;
+		
+		if(uhattuRuutu(uhka, kuningas.annaSijainti())) {
+			return true;
+		}
+		
+		return false;
+		
+		
+	}
 	
 	
 	//palauttaa true jos shakkimatti
@@ -206,40 +274,97 @@ public class Lauta implements Serializable {
 			}
 		}
 		
-		// TODO Voidaanko shakkimatti estää siirtämällä jotain muuta nappulaa kuin kunigasta
+		// TODO Voidaanko shakkimatti estää siirtämällä jotain muuta nappulaa kuin kuningasta
+		
+		//Voidaanko uhkaaja syödä:
+		for(Nappula uhkaaja : nappulat) {
+			if(uhkaaja.vari != uhka) {
+				continue;
+			}
+			
+			if(uhkaaja.voikoLiikkuaRuutuun(alkupSijainti)){
+				// nyt uhkaaja shakkaa kuningasta
+				if(uhattuRuutu(kuningas.vari, uhkaaja.annaSijainti())) {
+					return false;
+				}
+			}
+			
+			
+		}
+		
+		
 		
 		return true;
 	}
 	
-	// Palauttaa true jos annetun värinen nappula pystyy syömään nappulan annetusta ruudusta
-	//@param uhkaaja : väri joka voi syödä nappulan annetusta ruudusta
-	//@param ruutu : ruutu jonka uhka tarkistetaan
-	//@return : true jos ruutu on uhattu muuten false
-	private boolean uhattuRuutu(Vari uhkaaja, int[] ruutu) {
+	/** Palauttaa true jos annetun värinen nappula pystyy syömään nappulan annetusta ruudusta.
+	 * 
+	 * @param uhkaaja väri joka voi syödä nappulan annetusta ruudusta
+	 * @param ruutu ruutu jonka uhka tarkistetaan
+	 * @return true jos ruutu on uhattu muuten false
+	 */
+	public boolean uhattuRuutu(Vari uhkaaja, int[] ruutu) {
+		
+		System.out.println("Tarkistetaan onko ruutu " + ruutu[0] + "," + ruutu[1] + " uhattu");
+		
+		boolean ruutuUhattu = false;
+		
+		//Jos tarkistettavassa ruudussa on nappula, se pitää poistaa tarkistuksen ajaksi.
+		//Muutoin uhkaajan nappuloiden voikoSiirtyaRuutuun palauttaa false jos ruudussa on saman värinen nappula.
+		Nappula syotava = annaNappula(ruutu);
+		if(syotava != null) {
+			nappulat.remove(syotava);
+		}
+		
+		
 		for(Nappula n : nappulat) {
 			if(n.vari == uhkaaja) {
 				if(n instanceof Sotilas) { // Sotilas syö eri tavalla kuin liikkuu
 					if(uhkaaja == Vari.MUSTA) {
 						if((ruutu[0] == n.annaSijainti()[0]+1 || ruutu[0] == n.annaSijainti()[0]-1) && ruutu[1] == n.annaSijainti()[1]-1) {
-							return true;
+							ruutuUhattu = true;
+							break;
 						}
 					}else if(uhkaaja == Vari.MUSTA) {
 						if((ruutu[0] == n.annaSijainti()[0]+1 || ruutu[0] == n.annaSijainti()[0]-1) && ruutu[1] == n.annaSijainti()[1]+1) {
-							return true;
+							ruutuUhattu = true;
+							break;
 						}
 					}
 				}
+				//Kuninkaan voikoLiikkuaRuutuun-metodi hyödyntää tätä metodia, joten
+				//sitä ei voi kutsua tai tulee ympyräviittaus ja stackoverflow.
+				else if(n instanceof Kuningas) {
+					//Kuningas uhkaa ruutua, jos se on ruudun välittömässä naapuriruudussa.
+					//(kuninkaat eivät voi olla vierekkäisissä ruuduissa)
+					int[] kuninkaanSij = n.annaSijainti();
+					int xErotus = Math.abs(kuninkaanSij[0] - ruutu[0]);
+					int yErotus = Math.abs(kuninkaanSij[1] - ruutu[1]);
+					
+					if((yErotus == 1 && xErotus == 1) || (yErotus == 0 && xErotus == 1) || (yErotus == 1 && xErotus == 0)) {
+						ruutuUhattu = true;
+					}
+					
+				}
 				else if(n.voikoLiikkuaRuutuun(ruutu)) {
 					if(n instanceof Ratsu) { //Ratsu voi hypätä nappuloiden yli
-						return true;
+						ruutuUhattu = true;
+						break;
 					}
 					else if(tarkistaSiirtolinja(n.annaSijainti(), ruutu)) {
-						return true;
+						ruutuUhattu = true;
+						break;
 					}
 				}
 			}
 		}
-		return false;
+		
+		//Jos testattavasta ruudusta poistettiin nappula, lisätään se takaisin laudalle.
+		if(syotava != null) {
+			nappulat.add(syotava);
+		}
+		
+		return ruutuUhattu;
 	}
 
 	
