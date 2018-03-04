@@ -27,6 +27,13 @@ public class Kuningas extends Nappula{
 		if(lauta.annaNappula(ruutu) != null && lauta.annaNappula(ruutu).vari == vari) {
 			return false; // omaa ei voi syödä
 		}
+		//Kuningas ei saa siirtyä uhattuun ruutuun
+		Vari uhka = vari == Vari.VALKOINEN ? Vari.MUSTA : Vari.VALKOINEN;
+		if(lauta.uhattuRuutu(uhka, ruutu)) {
+			return false;
+		}
+		
+		
 		//Siirrytään vinottain yksi ruutu
 		if(siirtyma[0] == 1 && siirtyma[1] == 1) {
 			return true;
