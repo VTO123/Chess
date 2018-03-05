@@ -5,7 +5,7 @@ public abstract class Nappula implements Comparable<Nappula>, Serializable{
 	public final Vari vari;
 	protected final Lauta lauta;
 	
-	//Sijainti: ensimm‰inen arvo vastaa pystyrivin kirjainta a-h ja toinen vaakarivin numeroa
+	//Sijainti: ensimm‰inen arvo vastaa pystyrivin kirjainta a-h ja toinen vaakarivin numeroa 1-8
 	protected int[] sijainti = new int[2];
 	
 	public Nappula(Vari vari, int[] sijainti, Lauta lauta){
@@ -23,10 +23,24 @@ public abstract class Nappula implements Comparable<Nappula>, Serializable{
 	
 	public abstract boolean voikoLiikkuaRuutuun(int[] ruutu);
 	
+	
+	/**
+	 * Palauttaa nappulan sijainnin.
+	 * 
+	 * @return sijaintikoordinaatit
+	 */
+	
 	public int[] annaSijainti(){
 		return sijainti;
 	}
 	
+	/**
+	 * Asettaa nappulan sijainnin parametrin sijainti mukaiseksi.
+	 * Heitt‰‰ poikkeuksen jos nappulaa yritet‰‰n asettaa laudan ulkopuolelle.
+	 * 
+	 * @param sijainti
+	 * @throws IllegalArgumentException
+	 */
 	public void asetaSijainti(int[] sijainti){
 		if(sijainti[0] < 1 || sijainti[1] > 8
 				|| sijainti[1] < 1 || sijainti[1] > 8){
@@ -35,13 +49,15 @@ public abstract class Nappula implements Comparable<Nappula>, Serializable{
 		this.sijainti = sijainti;
 	}
 	
-	/*
+	
+	
+	/**
 	 * Vertailee nappuloita sijainnin perusteella. Ensin vaakarivin perusteella
 	 * ylh‰‰lt‰ alasp‰in ja sitten pystysarakkeen perusteella vasemmalta oikealle.
 	 * 
 	 * @param nappula
+	 * @return 1 jos t‰m‰ ol
 	 */
-	
 	
 	@Override
 	public int compareTo(Nappula toinen){
