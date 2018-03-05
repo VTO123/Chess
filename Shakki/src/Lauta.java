@@ -467,32 +467,6 @@ public class Lauta implements Serializable {
 	}
 	
 	
-	/**
-	 * Tallentaa laudan tilan Save.txt tiedostoon
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	public void tallennaLauta() throws FileNotFoundException, IOException {
-		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("Save.txt"));
-		out.writeObject(this);
-		out.close();
-	}
-	
-	/**
-	 * Lataa tallennetun laudan tilan Save.txt tiedostosta
-	 * 
-	 * @param lauta Lauta-olio johon tallennettu tila ladataan
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 *
-	 */
-	
-	public void lataaLauta(Lauta lauta) throws FileNotFoundException, IOException, ClassNotFoundException {
-		ObjectInputStream in = new ObjectInputStream(new FileInputStream("Save.txt"));
-		lauta = (Lauta) in.readObject();
-		in.close();
-	}
 	
 	/**
 	 * Luo pelinappulat laudalle ja asettaa niiden sijainnit shakin alkutilanteen mukaisiksi
