@@ -449,6 +449,43 @@ public class Lauta implements Serializable {
 				System.out.println("Virheellinen syöte");
 				continue;
 			}
+			else if (syote.contains("TALLENNA")) {
+				System.out.println("Tallennetaan peliä...");
+				
+				for(int i = 0; i < 3; i++) { //Tallennusta yritetään kolme kertaa
+					try {
+						tallennaPeli();
+						System.out.println("Peli tallennettu");
+						break;
+					}catch(Exception e) {
+						if(i < 2) {
+							System.out.println("Tallennus epäonnistui. Yritetään uudelleen...");
+						}else {
+							System.out.println("Peliä ei voitu tallentaa");
+						}
+					}
+				}
+				continue;
+			}
+			else if (syote.contains("LATAA")) {
+				System.out.println("Ladataan peliä...");
+				for(int i = 0; i < 3; i++) {
+					try {
+						lataaPeli();
+						System.out.println("Peli ladattu");
+					}catch(FileNotFoundException e) {
+						System.out.println("Tiedostoa ei löytynyt");
+					}catch(IOException|ClassNotFoundException e) {
+						if(i < 2) {
+							System.out.println("Lataaminen epäonnistui. Yritetään uudelleen...");
+						}else {
+							System.out.println("Peliä ei pystytty lataaman");
+						}
+					}
+				}
+				piirraLauta();
+				continue;
+			}
 			
 			try {
 			siirto[0][0] = koordMuunnos.get(syote.charAt(0));
