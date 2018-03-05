@@ -144,9 +144,6 @@ public class Lauta implements Serializable {
 				kunkku.linnoitus = false;
 				kunkku.onkoLiikkunut = true;
 				torni.onkoLiikkunut = true;
-				
-				Nappula jee = annaNappula(new int[] {6,1});
-				System.out.println(jee);
 			}
 			
 			
@@ -524,8 +521,8 @@ public class Lauta implements Serializable {
 				int[] sij = nappulat.get(index).annaSijainti();
 				if(sij[0] == s && sij[1] == r) {
 					rivi += " " + nappulat.get(index).toString();
-					rivi += " |"; 
-					if(index < nappulat.size()) {
+					rivi += " |";
+					if(index < nappulat.size() - 1) {
 						index++;
 					}
 				}else {
