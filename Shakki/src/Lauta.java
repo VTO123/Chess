@@ -127,7 +127,7 @@ public class Lauta implements Serializable {
 					}
 					else if(kohde[0] == 7){ //e1-ruudusta oikealle
 						torni = (Torni) annaNappula(new int[] {8,1});
-						torni.asetaSijainti(new int[] {7,1});
+						torni.asetaSijainti(new int[] {6,1});
 					}
 				}
 				else if(siirrettava.vari == Vari.MUSTA){
@@ -137,13 +137,16 @@ public class Lauta implements Serializable {
 					}
 					else if(kohde[0] == 7){
 						torni = (Torni) annaNappula(new int[] {8,8});
-						torni.asetaSijainti(new int[] {7,8});
+						torni.asetaSijainti(new int[] {6,8});
 					}
 				}
 				Kuningas kunkku = (Kuningas) siirrettava;
 				kunkku.linnoitus = false;
 				kunkku.onkoLiikkunut = true;
 				torni.onkoLiikkunut = true;
+				
+				Nappula jee = annaNappula(new int[] {6,1});
+				System.out.println(jee);
 			}
 			
 			
@@ -478,7 +481,7 @@ public class Lauta implements Serializable {
 		System.out.println("  -----------------------------------------");
 		
 		//Käydään läpi ruudut rivi kerallaan ylhäältä alas ja tulostetaan nappulat paikoilleen
-		for(int r = 8; r > 0; r--) {	
+		for(int r = 8; r > 0; r--) {
 			String rivi = r + " |"; //Rivin numerot vasempaan reunaan
 			for(int s = 1; s < 9; s++) {
 				int[] sij = nappulat.get(index).annaSijainti();
@@ -545,8 +548,7 @@ public class Lauta implements Serializable {
 		nappulat.add(new Torni(Vari.MUSTA, new int[] {8, 8}, this));
 		for(int i = 1; i < 9; i++) {
 			nappulat.add(new Sotilas(Vari.MUSTA, new int[] {i, 7}, this));
-		}
-		for(int i = 1; i < 9; i++) {
+			
 			nappulat.add(new Sotilas(Vari.VALKOINEN, new int[] {i, 2}, this));
 		}
 		nappulat.add(new Torni(Vari.VALKOINEN, new int[] {1, 1}, this));
