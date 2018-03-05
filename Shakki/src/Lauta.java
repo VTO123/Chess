@@ -310,7 +310,6 @@ public class Lauta implements Serializable {
 	 */
 	public boolean uhattuRuutu(Vari uhkaaja, int[] ruutu) {
 		
-		System.out.println("Tarkistetaan onko ruutu " + ruutu[0] + "," + ruutu[1] + " uhattu");
 		
 		boolean ruutuUhattu = false;
 		
@@ -439,8 +438,9 @@ public class Lauta implements Serializable {
 		
 		int index = 0;
 		
-		//Sarakkeita vastaavat kirjaimet yläreunaan
-		System.out.println("    a    b    c    d    e    f    g    h");
+		
+		System.out.println();
+		System.out.println("    a    b    c    d    e    f    g    h"); //Sarakkeita vastaavat kirjaimet yläreunaan
 		System.out.println("  -----------------------------------------");
 		
 		//Käydään läpi ruudut rivi kerallaan ylhäältä alas ja tulostetaan nappulat paikoilleen
@@ -463,6 +463,7 @@ public class Lauta implements Serializable {
 		}
 		//Sarakkeita vastaavat kirjaimet alareunaan
 		System.out.println("    a    b    c    d    e    f    g    h");
+		System.out.println();
 	}
 	
 	

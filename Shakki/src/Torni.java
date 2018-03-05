@@ -1,6 +1,8 @@
 
 public class Torni extends Nappula{
 	
+	public boolean onkoLiikkunut = false;
+	
 	public Torni(Vari vari, int[] sijainti, Lauta lauta){
 		super(vari, sijainti, lauta);
 	}
