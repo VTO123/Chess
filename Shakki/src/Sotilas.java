@@ -17,42 +17,42 @@ public class Sotilas extends Nappula{
 		
 		//Tarkistetaan että annettu ruutu on laudalla
 		if(ruutu[0] < 1 || ruutu[0] > 8 || ruutu[1] < 1 || ruutu[1] > 8) {
-			throw new IllegalArgumentException("Kohderuutu laudan ulkopuolella!");
+			return false;
 		}
 		
-		//Valkoinen sotilas voi normaalisti liikkua yhden ruudun ylöspäin
-		if(vari == Vari.VALKOINEN && ruutu[1] - sijainti[1] == 1 && ruutu[0] == sijainti[0]) {
-			return true;
-		}
-		
-		//Musta sotilas voi normaalisti liikkua yhden ruudun alaspäin
-		else if(vari == Vari.MUSTA && sijainti[1] - ruutu[1] == 1 && ruutu[0] == sijainti[0]) {
-			return true;
-		}
-		
-		int aloitusRivi = (vari == Vari.VALKOINEN) ? 2 : 7;
-		
-		//Ensimmäinen siirto voi olla kaksi ruutua
-		if(annaSijainti()[1] == aloitusRivi && sijainti[0] == ruutu[0] && Math.abs(ruutu[1] - sijainti[1]) == 2  && lauta.tarkistaSiirtolinja(sijainti, ruutu)){
+		//suoraan liikuttaessa ei voi syödä
+		if(lauta.annaNappula(ruutu) == null) {
 			
-			//kohderuudussa ei saa olla nappulaa
-			if(lauta.annaNappula(ruutu) != null) {
-				return false;
+			//Valkoinen sotilas voi normaalisti liikkua yhden ruudun ylöspäin
+			if(vari == Vari.VALKOINEN && ruutu[1] - sijainti[1] == 1 && ruutu[0] == sijainti[0]) {
+				return true;
 			}
 			
-			return true;
+			//Musta sotilas voi normaalisti liikkua yhden ruudun alaspäin
+			else if(vari == Vari.MUSTA && sijainti[1] - ruutu[1] == 1 && ruutu[0] == sijainti[0]) {
+				return true;
+			}
 			
+			int aloitusRivi = (vari == Vari.VALKOINEN) ? 2 : 7;
+			
+			//Ensimmäinen siirto voi olla kaksi ruutua
+			if(annaSijainti()[1] == aloitusRivi && sijainti[0] == ruutu[0] && Math.abs(ruutu[1] - sijainti[1]) == 2  && lauta.tarkistaSiirtolinja(sijainti, ruutu)){
+				
+				//kohderuudussa ei saa olla nappulaa
+				if(lauta.annaNappula(ruutu) != null) {
+					return false;
+				}
+				
+				return true;
+				
+			}
 		}
-		
 		//Syönti tapahtuu vinoon yhden ruudun verran
 		else if((ruutu[0] == sijainti[0] + 1 || ruutu[0] == sijainti[0] - 1) && ruutu[1] == sijainti[1] + ((lauta.vuoro == Vari.VALKOINEN) ? 1 : -1)){
 			
 			//Syönti onnistuu vain, jos kohderuudussa on vastustajan nappula
 			Nappula kohdeNappula = lauta.annaNappula(ruutu);
-			if(kohdeNappula == null) {
-				return false;
-			}
-			else if(kohdeNappula.vari != lauta.vuoro) {
+			if(kohdeNappula.vari != lauta.vuoro) {
 				return true;
 			}
 			return false;

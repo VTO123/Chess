@@ -15,7 +15,7 @@ public class Lahetti extends Nappula{
 		
 		//Tarkistetaan että annettu ruutu on laudalla
 		if(ruutu[0] < 1 || ruutu[0] > 8 || ruutu[1] < 1 || ruutu[1] > 8) {
-			throw new IllegalArgumentException("Kohderuutu laudan ulkopuolella!");
+			return false;
 		}
 		
 		if(lauta.annaNappula(ruutu) != null && lauta.annaNappula(ruutu).vari == vari) {
