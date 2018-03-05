@@ -116,6 +116,40 @@ public class Lauta implements Serializable {
 			}
 			siirrettava.asetaSijainti(kohde);
 			
+			if(siirrettava instanceof Kuningas && ((Kuningas) siirrettava).linnoitus){
+				
+				Torni torni = null;
+				
+				if(siirrettava.vari == Vari.VALKOINEN){
+					if(kohde[0] == 3){ //liikutaan e1- ruudusta vasemmalle
+						torni = (Torni) annaNappula(new int[] {1,1});
+						torni.asetaSijainti(new int[] {4,1});
+					}
+					else if(kohde[0] == 7){ //e1-ruudusta oikealle
+						torni = (Torni) annaNappula(new int[] {8,1});
+						torni.asetaSijainti(new int[] {7,1});
+					}
+				}
+				else if(siirrettava.vari == Vari.MUSTA){
+					if(kohde[0] == 3){ //e8-ruudusta vasemmalle
+						torni = (Torni) annaNappula(new int[] {1,8});
+						torni.asetaSijainti(new int[] {4,8});
+					}
+					else if(kohde[0] == 7){
+						torni = (Torni) annaNappula(new int[] {8,8});
+						torni.asetaSijainti(new int[] {7,8});
+					}
+				}
+				Kuningas kunkku = (Kuningas) siirrettava;
+				kunkku.linnoitus = false;
+				kunkku.onkoLiikkunut = true;
+				torni.onkoLiikkunut = true;
+			}
+			
+			
+			
+			
+			
 			//Jos siirt‰j‰‰ shakataan, niin vain kuninkaan pelastavat siirrot ovat laillisia.
 			//Shakkaustilanne tulee purkaa siirt‰m‰ll‰, joten t‰ytyy katsoa laudan tilanteen muututtua.
 			if(shakki) {

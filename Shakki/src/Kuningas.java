@@ -87,7 +87,7 @@ public class Kuningas extends Nappula{
 				if(!lauta.tarkistaSiirtolinja(sijainti, torni.annaSijainti())) {
 					return false;
 				}
-				
+				linnoitus = true;
 				return true;
 			}
 			
@@ -116,7 +116,7 @@ public class Kuningas extends Nappula{
 				if(!lauta.tarkistaSiirtolinja(sijainti, torni.annaSijainti())) {
 					return false;
 				}
-				
+				linnoitus = true;
 				return true;
 			}
 			
