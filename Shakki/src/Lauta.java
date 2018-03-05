@@ -157,8 +157,13 @@ public class Lauta implements Serializable {
 	}
 	
 	
-	/*
+	/**
 	 * Palauttaa true, jos lähtö- ja kohderuudun välissä ei ole nappuloita.
+	 * Ei tarkista kohderuutua.
+	 * 
+	 * @param lahto Lähtöruudun koordinaatit
+	 * @param kohde Kohderuudun koordinaatit
+	 * @return true, jos lähtö- ja kohderuudun välisellä linjalla ei ole nappuloita
 	 */
 	boolean tarkistaSiirtolinja(int[] lahto, int[] kohde){
 		
@@ -204,7 +209,7 @@ public class Lauta implements Serializable {
 	/**
 	 * Palauttaa true jos kuningasta uhataan
 	 * 
-	 * @return onko shakkaus tapahtunut
+	 * @return shakataanko kuningasta
 	 */
 	private boolean onkoShakki() {
 		Nappula kuningas = null;
@@ -368,7 +373,11 @@ public class Lauta implements Serializable {
 	}
 
 	
-	//@return : return[0] == lähtökoordinaatti + return[1] == kohdekoordinaatti
+	/**
+	 * return[0][] = lähtökoordinaatti ja return[1][] = kohdekoordinaatti
+	 * 
+	 * @return siirron lähtö- ja kohderuutujen koordinaatit.
+	 */
 	private int[][] kysySiirto() {
 		boolean kelvollinen = false;
 		int[][] siirto = new int[2][2];
@@ -418,7 +427,11 @@ public class Lauta implements Serializable {
 		}
 		return siirto;
 	}
-
+	
+	
+	/**
+	 * Tulostaa laudan ja nappulat ascii-grafiikalla komentoriville.
+	 */
 	public void piirraLauta() {
 		
 		//Järjestetään nappulat tulostusta varten
@@ -452,22 +465,37 @@ public class Lauta implements Serializable {
 		System.out.println("    a    b    c    d    e    f    g    h");
 	}
 	
-	//Tallentaa laudan tilan Save.txt tiedostoon
+	
+	/**
+	 * Tallentaa laudan tilan Save.txt tiedostoon
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public void tallennaLauta() throws FileNotFoundException, IOException {
 		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("Save.txt"));
 		out.writeObject(this);
 		out.close();
 	}
 	
-	//Lataa tallennetun laudan tilan Save.txt tiedostosta
-	//@param lauta Lauta-olio johon tallennettu tila ladataan
+	/**
+	 * Lataa tallennetun laudan tilan Save.txt tiedostosta
+	 * 
+	 * @param lauta Lauta-olio johon tallennettu tila ladataan
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 *
+	 */
+	
 	public void lataaLauta(Lauta lauta) throws FileNotFoundException, IOException, ClassNotFoundException {
 		ObjectInputStream in = new ObjectInputStream(new FileInputStream("Save.txt"));
 		lauta = (Lauta) in.readObject();
 		in.close();
 	}
 	
-	//Luo pelinappulat ja asettaa niiden sijainnit shakin alkutilanteen mukaisiksi
+	/**
+	 * Luo pelinappulat laudalle ja asettaa niiden sijainnit shakin alkutilanteen mukaisiksi
+	 */
 	private void alustaNappulat() {
 		nappulat.add(new Torni(Vari.MUSTA, new int[] {1, 8}, this));
 		nappulat.add(new Ratsu(Vari.MUSTA, new int[] {2, 8}, this));
@@ -493,7 +521,9 @@ public class Lauta implements Serializable {
 		nappulat.add(new Torni(Vari.VALKOINEN, new int[] {8, 1}, this));
 	}
 
-	//Alustaa HashMap olion jota käytetään kirjainkoordinaattien muuntamiseen luvuiksi
+	/**
+	 * Alustaa HashMap olion jota käytetään kirjainkoordinaattien muuntamiseen luvuiksi
+	 */
 	private void alustaKoordMuunnos() {
 		koordMuunnos = new HashMap<>();
 		koordMuunnos.put('A', 1);
