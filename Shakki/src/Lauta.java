@@ -17,6 +17,7 @@ public class Lauta implements Serializable {
 	public Vari vuoro;
 	private HashMap<Character, Integer> koordMuunnos;
 	private boolean shakki;
+	public int[][] edellinenSiirto = new int[][] {{0,0},{0,0}};
 	
 	
 	public Lauta() {
@@ -116,33 +117,35 @@ public class Lauta implements Serializable {
 			}
 			siirrettava.asetaSijainti(kohde);
 			
+			//Ohestalyönnissä lyödään sotilas eri ruudusta kuin mihin siirrytään
+			if(siirrettava instanceof Sotilas && ((Sotilas) siirrettava).enPassantSotilas != null) {
+				
+				nappulat.remove( ((Sotilas) siirrettava).enPassantSotilas );
+				((Sotilas) siirrettava).enPassantSotilas = null;
+			}
+			
+			//Jos siirto on linnoitus, niin siirretään vielä tornia.
 			if(siirrettava instanceof Kuningas && ((Kuningas) siirrettava).linnoitus){
 				
 				Torni torni = null;
 				
-				if(siirrettava.vari == Vari.VALKOINEN){
-					if(kohde[0] == 3){ //liikutaan e1- ruudusta vasemmalle
-						torni = (Torni) annaNappula(new int[] {1,1});
-						torni.asetaSijainti(new int[] {4,1});
+				int rivi = (siirrettava.vari == Vari.VALKOINEN ? 1 : 8); // Valkean linnoitus tapahtuu aina rivillä 1 ja mustan rivillä 8.
+				
+				if(kohde[0] == 3){ //pitkä linnoitus vasemmalle
+					torni = (Torni) annaNappula(new int[] {1,rivi});
+					if(torni.onkoLiikkunut) {
+						return false;
 					}
-					else if(kohde[0] == 7){ //e1-ruudusta oikealle
-						torni = (Torni) annaNappula(new int[] {8,1});
-						torni.asetaSijainti(new int[] {6,1});
-					}
+					torni.asetaSijainti(new int[] {4,rivi});
 				}
-				else if(siirrettava.vari == Vari.MUSTA){
-					if(kohde[0] == 3){ //e8-ruudusta vasemmalle
-						torni = (Torni) annaNappula(new int[] {1,8});
-						torni.asetaSijainti(new int[] {4,8});
+				else if(kohde[0] == 7){ //lyhyt linnoitus oikealle
+					torni = (Torni) annaNappula(new int[] {8,rivi});
+					if(torni.onkoLiikkunut) {
+						return false;
 					}
-					else if(kohde[0] == 7){
-						torni = (Torni) annaNappula(new int[] {8,8});
-						torni.asetaSijainti(new int[] {6,8});
-					}
+					torni.asetaSijainti(new int[] {6,rivi});
 				}
-				Kuningas kunkku = (Kuningas) siirrettava;
-				kunkku.linnoitus = false;
-				kunkku.onkoLiikkunut = true;
+				((Kuningas) siirrettava).linnoitus = false;
 				torni.onkoLiikkunut = true;
 			}
 			
@@ -151,7 +154,7 @@ public class Lauta implements Serializable {
 			
 			
 			//Jos siirtäjää shakataan, niin vain kuninkaan pelastavat siirrot ovat laillisia.
-			//Shakkaustilanne tulee purkaa siirtämällä, joten täytyy katsoa laudan tilanteen muututtua.
+			//Shakkaustilanne tulee purkaa siirtämällä, joten täytyy katsoa laudan tilanteen muututtua onko kuningas vielä shakissa.
 			if(shakki) {
 				//Etsitään shakattu kuningas
 				Nappula uhattuKuningas = null;
@@ -180,7 +183,19 @@ public class Lauta implements Serializable {
 				
 			}
 			
+			//merkitään kuningas tai torni liikkuneeksi jos sellaista siirrettiin
+			if(siirrettava instanceof Kuningas) {
+				((Kuningas) siirrettava).onkoLiikkunut = true;
+			}
+			else if(siirrettava instanceof Torni) {
+				((Torni) siirrettava).onkoLiikkunut = true;
+			}
 			
+			//kirjataan tehty siirto viimeisimmäksi siirroksi
+			edellinenSiirto[0][0] = lahto[0];
+			edellinenSiirto[0][1] = lahto[1];
+			edellinenSiirto[1][0] = kohde[0];
+			edellinenSiirto[1][1] = kohde[1];
 			
 			return true;
 		}
@@ -421,7 +436,6 @@ public class Lauta implements Serializable {
 			System.out.print(vari + ", anna siirto: ");
 		
 			//A1 A2 lähtöruutu *väli* kohderuutu
-			//TODO savegame tallentaa pelin
 		
 			while(!Peli.scanner.hasNextLine()) {
 				//Odotetaan syötettä
@@ -442,11 +456,8 @@ public class Lauta implements Serializable {
 			syote = syote.toUpperCase();
 			
 			String tarkastus = "ABCDEFGH";
-			if(!(syote.length() == 5 && tarkastus.contains(syote.charAt(0) + "") && tarkastus.contains(syote.charAt(3) + ""))){
-				System.out.println("Virheellinen syöte");
-				continue;
-			}
-			else if (syote.contains("TALLENNA")) {
+			
+			if (syote.contains("TALLENNA")) {
 				System.out.println("Tallennetaan peliä...");
 				
 				for(int i = 0; i < 3; i++) { //Tallennusta yritetään kolme kertaa
@@ -470,6 +481,7 @@ public class Lauta implements Serializable {
 					try {
 						lataaPeli();
 						System.out.println("Peli ladattu");
+						break;
 					}catch(FileNotFoundException e) {
 						System.out.println("Tiedostoa ei löytynyt");
 					}catch(IOException|ClassNotFoundException e) {
@@ -481,6 +493,10 @@ public class Lauta implements Serializable {
 					}
 				}
 				piirraLauta();
+				continue;
+			}
+			else if(!(syote.length() == 5 && tarkastus.contains(syote.charAt(0) + "") && tarkastus.contains(syote.charAt(3) + ""))){
+				System.out.println("Virheellinen syöte");
 				continue;
 			}
 			

@@ -1,6 +1,8 @@
 
 public class Sotilas extends Nappula{
 	
+	public Sotilas enPassantSotilas = null; //Sotilas, joka viittaa ohestalyönnin aikana lyötävään sotilaaseen.
+	
 	public Sotilas(Vari vari, int[] sijainti, Lauta lauta) {
 		super(vari, sijainti, lauta);
 	}
@@ -21,22 +23,22 @@ public class Sotilas extends Nappula{
 		}
 		
 		//suoraan liikuttaessa ei voi syödä
-		if(lauta.annaNappula(ruutu) == null) {
+		if(lauta.annaNappula(ruutu) == null && ruutu[0] == sijainti[0]) {
 			
 			//Valkoinen sotilas voi normaalisti liikkua yhden ruudun ylöspäin
-			if(vari == Vari.VALKOINEN && ruutu[1] - sijainti[1] == 1 && ruutu[0] == sijainti[0]) {
+			if(vari == Vari.VALKOINEN && ruutu[1] - sijainti[1] == 1) {
 				return true;
 			}
 			
 			//Musta sotilas voi normaalisti liikkua yhden ruudun alaspäin
-			else if(vari == Vari.MUSTA && sijainti[1] - ruutu[1] == 1 && ruutu[0] == sijainti[0]) {
+			else if(vari == Vari.MUSTA && sijainti[1] - ruutu[1] == 1) {
 				return true;
 			}
 			
 			int aloitusRivi = (vari == Vari.VALKOINEN) ? 2 : 7;
 			
 			//Ensimmäinen siirto voi olla kaksi ruutua
-			if(annaSijainti()[1] == aloitusRivi && sijainti[0] == ruutu[0] && Math.abs(ruutu[1] - sijainti[1]) == 2  && lauta.tarkistaSiirtolinja(sijainti, ruutu)){
+			if(annaSijainti()[1] == aloitusRivi && Math.abs(ruutu[1] - sijainti[1]) == 2  && lauta.tarkistaSiirtolinja(sijainti, ruutu)){
 				
 				//kohderuudussa ei saa olla nappulaa
 				if(lauta.annaNappula(ruutu) != null) {
@@ -52,9 +54,39 @@ public class Sotilas extends Nappula{
 			
 			//Syönti onnistuu vain, jos kohderuudussa on vastustajan nappula
 			Nappula kohdeNappula = lauta.annaNappula(ruutu);
-			if(kohdeNappula.vari != lauta.vuoro) {
+			if(kohdeNappula != null && kohdeNappula.vari != lauta.vuoro) {
 				return true;
 			}
+			
+			/*
+			 *Jos syöntiruudussa ei ole nappulaa, kyseessä voi olla ohestalyönti.
+			 *Ohestalyönti tarkoittaa aloitusriviltään kaksi askelta liikkuneen sotilaan lyömistä omalla sotilaalla, jonka rinnalle
+			 *lyötävä sotilas siirtyi. Lyönti tehdään lyötävän sotilaan takana olevaan ruutuun ikään kuin tämä olisi liikkunut vain yhden ruudun.
+			 *Ohestalyönnin voi suorittaa vain välittömästi seuraavalla siirrolla lyötävän sotilaan siirtymisestä.
+			 */
+			if(kohdeNappula == null) {
+				
+				/*
+				 *Vastustajan edellisen siirron tulee olla tapahtunut tämän sotilaan viereiseen ruutuun linjalle jolle ollaan lyömässä,
+				 *vastustajan sotilaiden aloitusriviltä kahden ruudun verran
+				 * lauta.edellinenSiirto[1] sisältää edellisen siirron kohderuudun ja [0] lähtöruudun
+				 */
+				if(lauta.edellinenSiirto[1][0] == ruutu[0] && lauta.annaNappula(lauta.edellinenSiirto[1]) instanceof Sotilas
+						&& lauta.annaNappula(lauta.edellinenSiirto[1]).vari != vari) {
+					
+					//Lyötävän sotilaan tulee olla liikkunut kaksi askelta
+					if(Math.abs(lauta.edellinenSiirto[0][1] - lauta.edellinenSiirto[1][1]) == 2) {
+						enPassantSotilas = (Sotilas) lauta.annaNappula(lauta.edellinenSiirto[1]);
+						return true;
+						
+					}
+					
+				}
+			}
+			
+			
+			
+			
 			return false;
 		}
 		
