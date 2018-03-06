@@ -44,11 +44,16 @@ public class Lauta implements Serializable {
 			}
 		}
 		
-		//Piirretään lauta ja tarkistetaan mahdollinen shakkimatti
+		//Piirretään lauta ja tarkistetaan mahdollinen shakki
 		piirraLauta();
 		if(onkoShakki()) {
-			System.out.println("Shakki!");
-			shakki = true;
+			//Tarkistetaan mahdollinen shakkimatti
+			if(onkoShakkiMatti()) {
+				System.out.println("Shakkimatti!");
+			}else {
+				System.out.println("Shakki!");
+				shakki = true;
+			}
 		}
 		
 		//Vaihdetaan vuorossa olevaa väriä
@@ -386,10 +391,11 @@ public class Lauta implements Serializable {
 			}
 		}
 		
-		//Voidaanko uhkaaja syödä tai voiddnko uhkaajan ja kuninkaan väliin siirtää nappula esteeksi:
+		//Voidaanko uhkaaja syödä tai voiddaanko uhkaajan ja kuninkaan väliin siirtää nappula esteeksi:
 		int uhkaajat = 0;
 		boolean voidaankoPelastaa = false;
-		for(Nappula uhkaaja : nappulat) {
+		for(int i = 0; i < nappulat.size(); i++) {
+			Nappula uhkaaja = nappulat.get(i);
 			if(uhkaaja.vari != uhka) {
 				continue;
 			}
