@@ -197,6 +197,14 @@ public class Lauta implements Serializable {
 			edellinenSiirto[1][0] = kohde[0];
 			edellinenSiirto[1][1] = kohde[1];
 			
+			
+			//sotilaan korotus upseeriksi jos se pääsi vastapuolen reunaan asti (valkoinen riville 8 tai musta riville 1)
+			if(siirrettava instanceof Sotilas && siirrettava.annaSijainti()[1] == (siirrettava.vari == Vari.VALKOINEN ? 8 : 1)){
+				nappulat.remove(siirrettava);
+				nappulat.add(kysySotilaanKorotus(siirrettava.annaSijainti(), siirrettava.vari));
+			}
+			
+			
 			return true;
 		}
 		else{
@@ -204,6 +212,56 @@ public class Lauta implements Serializable {
 			return false;
 		}
 	}
+	
+	/**
+	 * Kysyy käyttäjäjältä syötteen ja palauttaa sen mukaisen nappulan.
+	 * Syötteet: D - kuningatar, T - torni, L - lähetti, R - ratsu
+	 * 
+	 * @param ruutu Ruutu, johon nappula lisätään
+	 * @return nappula, joksi sotilas korotettiin
+	 * 
+	 * 
+	 */
+	public Nappula kysySotilaanKorotus(int[] ruutu, Vari vari){
+		
+		String syote = "";
+		while(!(syote.equals("D") || syote.equals("L") || syote.equals("T") || syote.equals("R"))){
+			System.out.println("Miksi haluat korottaa sotilaan? (D, T, L tai R)");
+			while(!Peli.scanner.hasNextLine()) {
+				//Odotetaan syötettä
+				try {
+					//Tarkistetaan syötteen 100ms välein
+					Thread.sleep(100); //Ilman tätä odottaminen vie suoritinytimen lähes kaikki resurssit
+				}
+				catch(InterruptedException ie) {
+					//Pääthreadin keskeyttämisen tapahtuessa ei ole paljon tehtävissä
+					//mutta try-catch vaaditaan
+				}
+			
+			}
+		
+			syote = Peli.scanner.nextLine();
+			
+			
+			syote = syote.toUpperCase();
+		}
+		//kuningatar
+		if(syote.equals("D")){
+			return new Kuningatar(vari, ruutu, this);
+		}
+		else if(syote.equals("T")){
+			return new Torni(vari, ruutu, this);
+		}
+		else if(syote.equals("L")){
+			return new Lahetti(vari, ruutu, this);
+		}
+		else{
+			return new Ratsu(vari, ruutu, this);
+		}
+		
+	}
+	
+	
 	
 	
 	/**
