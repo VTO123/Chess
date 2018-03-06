@@ -595,6 +595,7 @@ public class Lauta implements Serializable {
 				ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("Save.txt"));
 				out.writeObject(nappulat);
 				out.writeObject(vuoro);
+				out.writeObject(edellinenSiirto);
 				out.flush();
 				out.close();
 				
@@ -628,6 +629,7 @@ public class Lauta implements Serializable {
 				ObjectInputStream in = new ObjectInputStream(new FileInputStream("Save.txt"));
 				nappulat = (ArrayList<Nappula>) in.readObject();
 				vuoro = (Vari) in.readObject();
+				edellinenSiirto = (int[][]) in.readObject();
 				in.close();
 				
 				System.out.println("Peli ladattu");
