@@ -328,9 +328,9 @@ public class Lauta implements Serializable {
 			}
 		}
 		
-		// TODO Voidaanko shakkimatti estää siirtämällä jotain muuta nappulaa kuin kuningasta
-		
-		//Voidaanko uhkaaja syödä:
+		//Voidaanko uhkaaja syödä tai voiddnko uhkaajan ja kuninkaan väliin siirtää nappula esteeksi:
+		int uhkaajat = 0;
+		boolean voidaankoPelastaa = false;
 		for(Nappula uhkaaja : nappulat) {
 			if(uhkaaja.vari != uhka) {
 				continue;
@@ -338,17 +338,75 @@ public class Lauta implements Serializable {
 			
 			if(uhkaaja.voikoLiikkuaRuutuun(alkupSijainti)){
 				// nyt uhkaaja shakkaa kuningasta
-				if(uhattuRuutu(kuningas.vari, uhkaaja.annaSijainti())) {
-					return false;
+				uhkaajat++;
+				if(uhattuRuutu(kuningas.vari, uhkaaja.annaSijainti())) { //Voidaanko uhkaaja syödä
+					voidaankoPelastaa = true;
+				}else if(voidaankoEstaa(kuningas, uhkaaja)) { //Voidaanko uhkaajan ja kuninkaan väliin siirtää nappula
+					voidaankoPelastaa = true;
 				}
 			}
-			
-			
+		}
+		if(uhkaajat == 1 && voidaankoPelastaa) { //Jos uhkaajia on enemmän, kuin 1 shakkimattia ei voida estää
+			return false;
 		}
 		
-		
-		
 		return true;
+	}
+	
+	/**Palauttaa true jos uhatun syöminen voidaan estää siirtämällä nappula uhatun ja uhkaajan väliin
+	 * 
+	 * @param uhattu nappula jota uhataan
+	 * @param uhkaaja nappula joka uhkaa
+	 * @return	true jos syöminen voidaan estää muuten false
+	 */
+	private boolean voidaankoEstaa(Nappula uhattu, Nappula uhkaaja) {
+		
+		int[] kohde = uhattu.annaSijainti();
+		int[] lahto = uhkaaja.annaSijainti();
+		
+		if(uhkaaja instanceof Ratsu) { //Ratsu voi hypätä nappuloiden yli
+			return false;
+		}
+		//Jos uhkaaja on uhatun vieressä ai niiden väliin voi liikkua
+		if(Math.abs(lahto[0] - kohde[0]) == 1 || Math.abs(lahto[1] - kohde[1]) == 1) {
+			return false;
+		}
+		
+		//Siirtymäalkio kertoo siirroksen suunnan.
+		int[] siirtymaAlkio = new int[2];
+				
+		if(kohde[0] == lahto[0]){
+			//Siirrytään vaakariviltä toiselle
+			siirtymaAlkio[1] = (kohde[1] - lahto[1] > 0) ? 1 : -1;
+		}
+		else if(kohde[1] == lahto[1]){
+			//Siirrytään pystysarakkeelta toiselle
+			siirtymaAlkio[0] = (kohde[0] - lahto[0] > 0) ? 1 : -1;
+
+		}else{
+			//Siirrytään vinottain
+			siirtymaAlkio[0] = (kohde[0] - lahto[0] > 0) ? 1 : -1;
+			siirtymaAlkio[1] = (kohde[1] - lahto[1] > 0) ? 1 : -1;
+		}
+		
+		//ruudut joita tarkastellaan
+		int[] tarkistettava = new int[] {lahto[0] + siirtymaAlkio[0], lahto[1] + siirtymaAlkio[1]};
+		
+		//Käydään läpi ruudut kohteen ja lähdön välissä
+		while(tarkistettava[0] != kohde[0] && tarkistettava[1] != kohde[1]) {
+			for(Nappula n : nappulat) {
+				if(n.vari == uhattu.vari) {
+					if(n.voikoLiikkuaRuutuun(tarkistettava)) {
+						return true;
+					}
+				}
+			}
+			//Siirrytään seuraavaan ruutuun
+			tarkistettava[0] += siirtymaAlkio[0];
+			tarkistettava[1] += siirtymaAlkio[1];
+		}
+		
+		return false;
 	}
 	
 	/** Palauttaa true jos annetun värinen nappula pystyy syömään nappulan annetusta ruudusta.
@@ -538,11 +596,13 @@ public class Lauta implements Serializable {
 				out.writeObject(nappulat);
 				out.writeObject(vuoro);
 				out.writeObject(edellinenSiirto);
+				out.writeBoolean(shakki);
 				out.flush();
 				out.close();
 				
 				System.out.println("Peli tallennettu");
 				break;
+				
 			}catch(Exception e) {
 				if(i < 2) {
 					System.out.println("Tallennus epäonnistui. Yritetään uudelleen...");
@@ -566,16 +626,19 @@ public class Lauta implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void lataaPeli() {
 		System.out.println("Ladataan peliä...");
+		
 		for(int i = 0; i < 3; i++) {
 			try {
 				ObjectInputStream in = new ObjectInputStream(new FileInputStream("Save.txt"));
 				nappulat = (ArrayList<Nappula>) in.readObject();
 				vuoro = (Vari) in.readObject();
 				edellinenSiirto = (int[][]) in.readObject();
+				shakki = in.readBoolean();
 				in.close();
 				
 				System.out.println("Peli ladattu");
 				break;
+				
 			}catch(FileNotFoundException e) {
 				System.out.println("Tiedostoa ei löytynyt");
 			}catch(IOException|ClassNotFoundException e) {
