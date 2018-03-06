@@ -458,40 +458,11 @@ public class Lauta implements Serializable {
 			String tarkastus = "ABCDEFGH";
 			
 			if (syote.contains("TALLENNA")) {
-				System.out.println("Tallennetaan peliä...");
-				
-				for(int i = 0; i < 3; i++) { //Tallennusta yritetään kolme kertaa
-					try {
-						tallennaPeli();
-						System.out.println("Peli tallennettu");
-						break;
-					}catch(Exception e) {
-						if(i < 2) {
-							System.out.println("Tallennus epäonnistui. Yritetään uudelleen...");
-						}else {
-							System.out.println("Peliä ei voitu tallentaa");
-						}
-					}
-				}
+				tallennaPeli();
 				continue;
 			}
 			else if (syote.contains("LATAA")) {
-				System.out.println("Ladataan peliä...");
-				for(int i = 0; i < 3; i++) {
-					try {
-						lataaPeli();
-						System.out.println("Peli ladattu");
-						break;
-					}catch(FileNotFoundException e) {
-						System.out.println("Tiedostoa ei löytynyt");
-					}catch(IOException|ClassNotFoundException e) {
-						if(i < 2) {
-							System.out.println("Lataaminen epäonnistui. Yritetään uudelleen...");
-						}else {
-							System.out.println("Peliä ei pystytty lataaman");
-						}
-					}
-				}
+				lataaPeli();
 				piirraLauta();
 				continue;
 			}
@@ -558,12 +529,27 @@ public class Lauta implements Serializable {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public void tallennaPeli() throws FileNotFoundException, IOException {
-		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("Save.txt"));
-		out.writeObject(nappulat);
-		out.writeObject(vuoro);
-		out.flush();
-		out.close();
+	public void tallennaPeli() {
+		System.out.println("Tallennetaan peliä...");
+		
+		for(int i = 0; i < 3; i++) { //Tallennusta yritetään kolme kertaa
+			try {
+				ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("Save.txt"));
+				out.writeObject(nappulat);
+				out.writeObject(vuoro);
+				out.flush();
+				out.close();
+				
+				System.out.println("Peli tallennettu");
+				break;
+			}catch(Exception e) {
+				if(i < 2) {
+					System.out.println("Tallennus epäonnistui. Yritetään uudelleen...");
+				}else {
+					System.out.println("Peliä ei voitu tallentaa");
+				}
+			}
+		}
 	}
 	
 	/**
@@ -577,11 +563,27 @@ public class Lauta implements Serializable {
 	 */
 	
 	@SuppressWarnings("unchecked")
-	public void lataaPeli() throws FileNotFoundException, IOException, ClassNotFoundException {
-		ObjectInputStream in = new ObjectInputStream(new FileInputStream("Save.txt"));
-		nappulat = (ArrayList<Nappula>) in.readObject();
-		vuoro = (Vari) in.readObject();
-		in.close();
+	public void lataaPeli() {
+		System.out.println("Ladataan peliä...");
+		for(int i = 0; i < 3; i++) {
+			try {
+				ObjectInputStream in = new ObjectInputStream(new FileInputStream("Save.txt"));
+				nappulat = (ArrayList<Nappula>) in.readObject();
+				vuoro = (Vari) in.readObject();
+				in.close();
+				
+				System.out.println("Peli ladattu");
+				break;
+			}catch(FileNotFoundException e) {
+				System.out.println("Tiedostoa ei löytynyt");
+			}catch(IOException|ClassNotFoundException e) {
+				if(i < 2) {
+					System.out.println("Lataaminen epäonnistui. Yritetään uudelleen...");
+				}else {
+					System.out.println("Peliä ei pystytty lataaman");
+				}
+			}
+		}	
 	}
 	
 	/**
