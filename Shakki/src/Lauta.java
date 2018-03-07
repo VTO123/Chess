@@ -586,28 +586,32 @@ public class Lauta implements Serializable {
 				}
 			
 			}
-		
+			//tallennetaan syöte muuttujaan
 			String syote = Peli.scanner.nextLine();
 			
-			
+			//Muutetaan syöte isoiksi kirjaimiksi sen tarkastelun helpottamiseksi
 			syote = syote.toUpperCase();
-			
+			//Käytetään syötteen oikeellisuuden tarkistamiseen
 			String tarkastus = "ABCDEFGH";
 			
-			if (syote.contains("TALLENNA")) {
+			if (syote.contains("TALLENNA")) {//Tallennus
 				tallennaPeli();
 				continue;
 			}
-			else if (syote.contains("LATAA")) {
+			else if(syote.contains("LATAA")) {//Tallennetun pelin lataaminen
 				lataaPeli();
 				piirraLauta();
 				continue;
 			}
-			else if(!(syote.length() == 5 && tarkastus.contains(syote.charAt(0) + "") && tarkastus.contains(syote.charAt(3) + ""))){
+			else if(syote.contains("LOPETA")) {//Pelin lopetus
+				System.exit(0);
+			}
+			else if(!(syote.length() == 5 && tarkastus.contains(syote.charAt(0) + "") && tarkastus.contains(syote.charAt(3) + ""))){//Siirto
 				System.out.println("Virheellinen syöte");
 				continue;
 			}
 			
+			//Muutetaan syöte koordinaateiksi
 			try {
 			siirto[0][0] = koordMuunnos.get(syote.charAt(0));
 			siirto[0][1] = Integer.parseInt(syote.charAt(1) + "");
