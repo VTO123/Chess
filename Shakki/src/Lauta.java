@@ -416,6 +416,7 @@ public class Lauta implements Serializable {
 			}
 			
 			if(uhkaaja.voikoLiikkuaRuutuun(alkupSijainti)){
+				
 				// nyt uhkaaja shakkaa kuningasta
 				uhkaajat++;
 				if(uhattuRuutu(kuningas.vari, uhkaaja.annaSijainti())) { //Voidaanko uhkaaja syödä
@@ -502,7 +503,13 @@ public class Lauta implements Serializable {
 		//Jos tarkistettavassa ruudussa on nappula, se pitää poistaa tarkistuksen ajaksi.
 		//Muutoin uhkaajan nappuloiden voikoSiirtyaRuutuun palauttaa false jos ruudussa on saman värinen nappula.
 		Nappula syotava = annaNappula(ruutu);
+		
+		int nappulanIndeksi = 0;
+		
 		if(syotava != null) {
+			//Listan sekoittaminen rikkoi muita metodeita jotka ovat riippuvaisia
+			//järjestyksestä
+			nappulanIndeksi = nappulat.indexOf(syotava);
 			nappulat.remove(syotava);
 		}
 		
@@ -551,7 +558,7 @@ public class Lauta implements Serializable {
 		
 		//Jos testattavasta ruudusta poistettiin nappula, lisätään se takaisin laudalle.
 		if(syotava != null) {
-			nappulat.add(syotava);
+			nappulat.add(nappulanIndeksi, syotava);
 		}
 		
 		return ruutuUhattu;
