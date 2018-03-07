@@ -17,6 +17,7 @@ public class Lauta implements Serializable {
 	public Vari vuoro;
 	private HashMap<Character, Integer> koordMuunnos;
 	private boolean shakki;
+	private boolean shakkiMatti;
 	public int[][] edellinenSiirto = new int[][] {{0,0},{0,0}};
 	
 	
@@ -26,6 +27,11 @@ public class Lauta implements Serializable {
 		alustaNappulat();
 		alustaKoordMuunnos();
 		shakki = false;
+		shakkiMatti = false;
+	}
+	
+	public boolean annaShakkiMatti() {
+		return shakkiMatti;
 	}
 	
 	public void pelaaVuoro() {
@@ -50,6 +56,7 @@ public class Lauta implements Serializable {
 			//Tarkistetaan mahdollinen shakkimatti
 			if(onkoShakkiMatti()) {
 				System.out.println("Shakkimatti!");
+				shakkiMatti = true;
 			}else {
 				System.out.println("Shakki!");
 				shakki = true;
@@ -669,6 +676,7 @@ public class Lauta implements Serializable {
 				out.writeObject(vuoro);
 				out.writeObject(edellinenSiirto);
 				out.writeBoolean(shakki);
+				out.writeBoolean(shakkiMatti);
 				out.flush();
 				out.close();
 				
@@ -706,6 +714,7 @@ public class Lauta implements Serializable {
 				vuoro = (Vari) in.readObject();
 				edellinenSiirto = (int[][]) in.readObject();
 				shakki = in.readBoolean();
+				shakkiMatti = in.readBoolean();
 				in.close();
 				
 				System.out.println("Peli ladattu");
