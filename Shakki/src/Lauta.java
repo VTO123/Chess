@@ -346,7 +346,10 @@ public class Lauta implements Serializable {
 	}
 	
 	
-	//palauttaa true jos shakkimatti
+	/**palauttaa true jos shakkimatti
+	 * 
+	 * @return true jos shakkimatti muuten false
+	 */
 	private boolean onkoShakkiMatti() {
 		Nappula kuningas = null;
 		
@@ -394,6 +397,11 @@ public class Lauta implements Serializable {
 		//Voidaanko uhkaaja syˆd‰ tai voiddaanko uhkaajan ja kuninkaan v‰liin siirt‰‰ nappula esteeksi:
 		int uhkaajat = 0;
 		boolean voidaankoPelastaa = false;
+		
+		/**T‰ss‰ ei voi k‰ytt‰‰ tehostettua looppia koska t‰m‰n loopin sis‰lt‰ kutsutaan voikoLiikkuaRuutuun-metodia
+		*VoikoLiikkuaRuutuun k‰ytt‰‰ tehostettua foria nappuloinin ja ArrayList heitt‰‰ poikkuksen, 
+		*jos sit‰ yritet‰‰n iteroida monesta koodin osasta samaan aikaan
+		*/
 		for(int i = 0; i < nappulat.size(); i++) {
 			Nappula uhkaaja = nappulat.get(i);
 			if(uhkaaja.vari != uhka) {
