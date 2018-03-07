@@ -401,7 +401,7 @@ public class Lauta implements Serializable {
 			}
 		}
 		
-		//Voidaanko uhkaaja syödä tai voiddaanko uhkaajan ja kuninkaan väliin siirtää nappula esteeksi:
+		//Voidaanko uhkaaja syödä tai voidaanko uhkaajan ja kuninkaan väliin siirtää nappula esteeksi:
 		int uhkaajat = 0;
 		boolean voidaankoPelastaa = false;
 		
@@ -425,6 +425,7 @@ public class Lauta implements Serializable {
 				}
 			}
 		}
+		
 		if(uhkaajat == 1 && voidaankoPelastaa) { //Jos uhkaajia on enemmän, kuin 1 shakkimattia ei voida estää
 			return false;
 		}
