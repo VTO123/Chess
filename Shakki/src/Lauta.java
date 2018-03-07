@@ -723,6 +723,9 @@ public class Lauta implements Serializable {
 			try {
 				ObjectInputStream in = new ObjectInputStream(new FileInputStream("Save.txt"));
 				nappulat = (ArrayList<Nappula>) in.readObject();
+				for(Nappula n : nappulat) {
+					n.lauta = this;
+				}
 				vuoro = (Vari) in.readObject();
 				edellinenSiirto = (int[][]) in.readObject();
 				shakki = in.readBoolean();
