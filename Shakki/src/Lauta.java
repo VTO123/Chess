@@ -612,6 +612,7 @@ public class Lauta implements Serializable {
 				continue;
 			}
 			else if(syote.contains("LOPETA")) {//Pelin lopetus
+				Peli.scanner.close(); 
 				System.exit(0);
 			}
 			else if(!(syote.length() == 5 && tarkastus.contains(syote.charAt(0) + "") && tarkastus.contains(syote.charAt(3) + ""))){//Siirto
