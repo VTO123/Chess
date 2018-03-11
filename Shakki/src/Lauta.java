@@ -286,7 +286,7 @@ public class Lauta implements Serializable {
 	 * @param kohde Kohderuudun koordinaatit
 	 * @return true, jos l‰htˆ- ja kohderuudun v‰lisell‰ linjalla ei ole nappuloita
 	 */
-	boolean tarkistaSiirtolinja(int[] lahto, int[] kohde){
+	public boolean tarkistaSiirtolinja(int[] lahto, int[] kohde){
 		
 		//Siirtym‰alkio kertoo siirroksen suunnan.
 		int[] siirtymaAlkio = new int[2];
@@ -407,7 +407,7 @@ public class Lauta implements Serializable {
 		int uhkaajat = 0;
 		boolean voidaankoPelastaa = false;
 		
-		/**T‰ss‰ ei voi k‰ytt‰‰ tehostettua looppia koska t‰m‰n loopin sis‰lt‰ kutsutaan voikoLiikkuaRuutuun-metodia
+		/*T‰ss‰ ei voi k‰ytt‰‰ tehostettua looppia koska t‰m‰n loopin sis‰lt‰ kutsutaan voikoLiikkuaRuutuun-metodia
 		*VoikoLiikkuaRuutuun k‰ytt‰‰ tehostettua foria nappuloinin ja ArrayList heitt‰‰ poikkuksen, 
 		*jos sit‰ yritet‰‰n iteroida monesta koodin osasta samaan aikaan
 		*/
