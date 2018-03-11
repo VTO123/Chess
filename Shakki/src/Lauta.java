@@ -165,35 +165,37 @@ public class Lauta implements Serializable {
 			
 			
 			
-			//Jos siirtäjää shakataan, niin vain kuninkaan pelastavat siirrot ovat laillisia.
-			//Shakkaustilanne tulee purkaa siirtämällä, joten täytyy katsoa laudan tilanteen muututtua onko kuningas vielä shakissa.
-			if(shakki) {
-				//Etsitään shakattu kuningas
-				Nappula uhattuKuningas = null;
-				for(Nappula n : nappulat) {
-					if(n instanceof Kuningas && n.vari == vuoro) {
-						uhattuKuningas = n;
-						break;
-					}
+			//Siirrot, jotka jättävät tai paljastavat kuninkaan shakkiin, eivät ole lallisia.
+			//Shakkaustilanne tarkistetaan laudan tilanteen muututtua.
+			
+			//Etsitään shakattu kuningas
+			Nappula uhattuKuningas = null;
+			for(Nappula n : nappulat) {
+				if(n instanceof Kuningas && n.vari == vuoro) {
+					uhattuKuningas = n;
+					break;
 				}
-				//Shakkaajan väri
-				Vari uhka = (vuoro == Vari.VALKOINEN ? Vari.MUSTA : Vari.VALKOINEN);
-				
-				//Jos siirron jälkeenkin siirtäjän kuningasta shakataan, siirto on laiton ja se täytyy peruuttaa.
-				if(uhattuRuutu(uhka, uhattuKuningas.annaSijainti())) {
-					//lisätään mahdollisesti syöty nappula takaisin laudalle
-					if(syotava != null) {
-						nappulat.add(syotava);
-					}
-					//ja siirretään siirretty nappula takaisin lähtöruutuunsa
-					siirrettava.asetaSijainti(lahto);
-					return false;
-				}
-				
-				//Muuten siirto oli ok ja shakki torjuttiin
-				shakki = false;
-				
 			}
+			//Shakkaajan väri
+			Vari uhka = (vuoro == Vari.VALKOINEN ? Vari.MUSTA : Vari.VALKOINEN);
+			
+			//Jos siirron jälkeen siirtäjän kuningasta shakataan, siirto on laiton ja se täytyy peruuttaa.
+			if(uhattuRuutu(uhka, uhattuKuningas.annaSijainti())) {
+				//lisätään mahdollisesti syöty nappula takaisin laudalle
+				if(syotava != null) {
+					nappulat.add(syotava);
+				}
+				//ja siirretään siirretty nappula takaisin lähtöruutuunsa
+				siirrettava.asetaSijainti(lahto);
+				//Siirto oli laiton, joten palautetaan false.
+				return false;
+			}
+			
+			//Suoritus siirtyy tänne jos kuningasta ei uhata.
+			if(shakki) {
+				shakki = false;
+			}
+			
 			
 			//merkitään kuningas tai torni liikkuneeksi jos sellaista siirrettiin
 			if(siirrettava instanceof Kuningas) {
@@ -234,7 +236,7 @@ public class Lauta implements Serializable {
 	 * 
 	 * 
 	 */
-	public Nappula kysySotilaanKorotus(int[] ruutu, Vari vari){
+	private Nappula kysySotilaanKorotus(int[] ruutu, Vari vari){
 		
 		String syote = "";
 		while(!(syote.equals("D") || syote.equals("L") || syote.equals("T") || syote.equals("R"))){
