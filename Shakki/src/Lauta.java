@@ -74,7 +74,7 @@ public class Lauta implements Serializable {
 	 * @param koord koordinaatti josta nappulaa etsit‰‰n
 	 * @return nappula joka on sijainnissa koord tai null jos sijainnissa ei ole nappulaa
 	 */
-	Nappula annaNappula(int[] koord) {
+	public Nappula annaNappula(int[] koord) {
 		Nappula etsitty = null;
 		for(Nappula n : nappulat) {
 			if(n.annaSijainti()[0] == koord[0] && n.annaSijainti()[1] == koord[1]) {
