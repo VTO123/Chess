@@ -3,7 +3,7 @@ import java.io.Serializable;
 public abstract class Nappula implements Comparable<Nappula>, Serializable{
 	
 	public final Vari vari;
-	protected Lauta lauta;
+	protected transient Lauta lauta;
 	
 	//Sijainti: ensimmäinen arvo vastaa pystyrivin kirjainta a-h ja toinen vaakarivin numeroa 1-8
 	protected int[] sijainti = new int[2];
