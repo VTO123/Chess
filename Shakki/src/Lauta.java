@@ -380,7 +380,7 @@ public class Lauta implements Serializable {
 		}
 		
 		//Tarkistetaan onko kunigas uhattuna vaikka sitä siirrettäisiin
-		//Eli tarkistetaan ovatko kuninkaan ympärillä olevat ruuduissa nappula tai uhka.
+		//Eli tarkistetaan onko kuninkaan ympärillä olevissa ruuduissa nappula tai uhka.
 		for(int r = -1; r < 2; r++) {
 			for(int s = -1; s < 2; s++) {
 				mahdSijainti[0] = alkupSijainti[0] + s; // [0] on pystysarakkeen numero (kirjain)
@@ -450,7 +450,7 @@ public class Lauta implements Serializable {
 		if(uhkaaja instanceof Ratsu) { //Ratsu voi hypätä nappuloiden yli
 			return false;
 		}
-		//Jos uhkaaja on uhatun vieressä ai niiden väliin voi liikkua
+		//Jos uhkaaja on uhatun vieressä ei niiden väliin voi liikkua
 		if(Math.abs(lahto[0] - kohde[0]) == 1 || Math.abs(lahto[1] - kohde[1]) == 1) {
 			return false;
 		}
